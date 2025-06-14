@@ -250,10 +250,17 @@ legend {
         min-height: 300px;
         height: auto;
     }
+
+    #upload-prompt {
+        font-size: 0.9rem;
+    }
     
     canvas {
         max-height: 50vh;
     }
+
+    .guide-line.horizontal {height: 1px;}
+    .guide-line.vertical {width: 1px;}
 
     .controls {
         width: 100%;

@@ -66,14 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // 画像サイズに基づいて線の太さの初期値を設定
                 const referenceWidth = 1920; // 基準となる画像幅
                 const baseThickness = 40;   // 基準幅のときの太さ
-                // 画像幅に比例して初期値を計算
                 let initialThickness = (originalImage.width / referenceWidth) * baseThickness;
-                // スライダーの最小値・最大値の範囲内に収める
                 initialThickness = Math.max(
                     parseFloat(lineThicknessInput.min), 
                     Math.min(initialThickness, parseFloat(lineThicknessInput.max))
                 );
-                // スライダーに値を設定
                 lineThicknessInput.value = initialThickness;
 
                 setupCanvas();
