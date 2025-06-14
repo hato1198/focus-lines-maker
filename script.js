@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // 画像サイズに基づいて線の太さの初期値を設定
                 const referenceWidth = 1920; // 基準となる画像幅
-                const baseThickness = 40;   // 基準幅のときの太さ
+                const baseThickness = 50;   // 基準幅のときの太さ
                 let initialThickness = (originalImage.width / referenceWidth) * baseThickness;
                 initialThickness = Math.max(
                     parseFloat(lineThicknessInput.min), 
