@@ -84,6 +84,23 @@
         </aside>
     </main>
 
+    <footer>
+        <p>© <span id="year"></span> focus-line-generator</p>
+        <nav>
+            <a href="#">トップページ</a>
+            <a href="terms.html">利用規約</a>
+            <a href="https://forms.gle/J8Hy73y9ipddVPwx7">ご意見・ご要望</a>
+        </nav>
+    </footer>
+
     <script src="script.js"></script>
+    <script>
+        (function() {
+        // 新しい Date オブジェクトから今年の年を取得
+        const currentYear = new Date().getFullYear();
+        // span 要素にテキストとして挿入
+        document.getElementById('year').textContent = currentYear;
+        })();
+    </script>
 </body>
 </html>
