@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
         link.click();
     }
 
-    // --- フォーカスエリアの操作ロジック（タッチ対応） ---
+    // --- フォーカスエリアの操作ロジック ---
     function getClientCoords(e) {
         if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
         return { x: e.clientX, y: e.clientY };
@@ -274,6 +274,20 @@ document.addEventListener('DOMContentLoaded', () => {
             focusArea.style.left = `${newLeft}px`;
             focusArea.style.top = `${newTop}px`;
         } else if (focusState.isResizing) {
+            let cursorStyle = 'default';
+            switch (focusState.resizeDirection) {
+                case 'nw':
+                case 'se':
+                    cursorStyle = 'nwse-resize';
+                    break;
+                case 'ne':
+                case 'sw':
+                    cursorStyle = 'nesw-resize';
+                    break;
+            }
+            document.body.style.cursor = cursorStyle;
+            focusArea.style.cursor = cursorStyle;
+
             let newLeft = focusState.startLeft, newTop = focusState.startTop;
             let newWidth = focusState.startWidth, newHeight = focusState.startHeight;
 
@@ -286,6 +300,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (focusState.resizeDirection.includes('n')) {
                 newHeight = focusState.startHeight - dy;
                 newTop = focusState.startTop + dy;
+            }
+
+            // Shiftキーによるアスペクト比固定の処理
+            if (e.shiftKey) {
+                // 幅と高さの大きい方を基準にする
+                const size = Math.max(newWidth, newHeight);
+                newWidth = size;
+                newHeight = size;
+
+                // ドラッグ方向に応じて、位置を再調整する
+                if (focusState.resizeDirection.includes('n')) {
+                    newTop = focusState.startTop + focusState.startHeight - newHeight;
+                }
+                if (focusState.resizeDirection.includes('w')) {
+                    newLeft = focusState.startLeft + focusState.startWidth - newWidth;
+                }
             }
 
             // リサイズ時の境界制限
@@ -323,6 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         focusState.isDragging = false;
         focusState.isResizing = false;
+        document.body.style.cursor = ''; 
+        focusArea.style.cursor = '';
         focusArea.classList.remove('centered');
         guideH.style.display = 'none';
         guideV.style.display = 'none';
