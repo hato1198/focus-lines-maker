@@ -100,12 +100,6 @@ canvas {
     border-radius: 50%;
 }
 
-/*
-#focus-area.centered {
-    border-color: var(--guide-color);
-}
-*/
-
 .resize-handle {
     position: absolute;
     width: 12px;
