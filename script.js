@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ctx = canvas.getContext('2d');
     const uploadPrompt = document.getElementById('upload-prompt');
     const canvasContainer = document.getElementById('canvas-container');
+    const workspace = document.querySelector('.workspace');
     const downloadBtn = document.getElementById('download-btn');
 
     // --- 設定項目の取得 ---
@@ -41,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     focusArea.addEventListener('touchstart', handleInteractionStart, { passive: false });
     document.addEventListener('touchmove', handleInteractionMove, { passive: false });
     document.addEventListener('touchend', handleInteractionEnd);
+
+    workspace.addEventListener('dragenter', handleDragEnter, false);
+    workspace.addEventListener('dragover', handleDragOver, false);
+    workspace.addEventListener('dragleave', handleDragLeave, false);
+    workspace.addEventListener('drop', handleDrop, false);
     
     // ウィンドウリサイズへの対応
     let resizeTimer;
@@ -62,24 +68,62 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // --- 主要な関数 ---
+    function handleDragEnter(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        workspace.classList.add('drag-over');
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect = 'copy'; // カーソルにコピーアイコンを表示
+    }
+
+    function handleDragLeave(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        workspace.classList.remove('drag-over');
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        workspace.classList.remove('drag-over');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            loadImageFile(files[0]);
+        }
+    }
+
     function handleImageUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
+        const files = e.target.files;
+        if (files.length > 0) {
+            loadImageFile(files[0]);
+        }
+    }
+
+    // ファイルを読み込み、画像として処理する共通関数
+    function loadImageFile(file) {
+        // 画像ファイル以外は処理しない
+        if (!file.type.startsWith('image/')) {
+            alert('画像ファイルを選択してください。');
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = (event) => {
             originalImage = new Image();
             originalImage.onload = () => {
-                
-                // 画像サイズに基づいて線の太さの初期値を設定
-                const referenceWidth = 1920; // 基準となる画像幅
-                const baseThickness = 50;   // 基準幅のときの太さ
+                const referenceWidth = 1920;
+                const baseThickness = 50;
                 let initialThickness = (originalImage.width / referenceWidth) * baseThickness;
                 initialThickness = Math.max(
                     parseFloat(lineThicknessInput.min), 
                     Math.min(initialThickness, parseFloat(lineThicknessInput.max))
                 );
                 lineThicknessInput.value = initialThickness;
-
                 setupCanvas();
                 requestAnimationFrame(drawScene);
                 uploadPrompt.classList.add('hidden');

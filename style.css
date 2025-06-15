@@ -58,6 +58,15 @@ header p {
     overflow: hidden;
     min-height: 400px;
 }
+/* ドラッグ＆ドロップ時のフィードバック用スタイル */
+.workspace.drag-over {
+    border-color: var(--primary-color);
+    background-color: #e6f2ff; /* 明るい青系の背景色 */
+    border-style: solid;
+}
+.workspace.drag-over > * {
+    pointer-events: none;
+}
 
 .controls {
     flex: 1;
@@ -69,9 +78,9 @@ header p {
     align-self: flex-start;
 }
 
-#upload-prompt {
+#upload-prompt p {
     text-align: center;
-    padding: 1rem;
+    margin: 8px 0;
 }
 
 #canvas-container {
