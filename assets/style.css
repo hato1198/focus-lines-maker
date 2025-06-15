@@ -285,7 +285,7 @@ footer nav a:hover {
     }
     
     canvas {
-        max-height: 50vh;
+        max-height: 80vh;
     }
 
     .guide-line.horizontal {height: 1px;}
