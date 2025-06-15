@@ -320,6 +320,10 @@ footer nav a:hover {
     line-height: 1.8;
 }
 
+.page-container strong {
+    font-weight: 500;
+}
+
 .page-container ul {
     padding-left: 20px;
 }
