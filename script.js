@@ -44,14 +44,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ウィンドウリサイズへの対応
     let resizeTimer;
+    // 最後に記録したウィンドウ幅を保持
+    let lastWindowWidth = window.innerWidth; 
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            if (originalImage) {
-                setupCanvas();
-                drawScene();
+            const currentWindowWidth = window.innerWidth;
+            // 幅が変わった場合のみ再描画を実行する
+            if (currentWindowWidth !== lastWindowWidth) {
+                lastWindowWidth = currentWindowWidth; // 新しい幅を記録
+                if (originalImage) {
+                    setupCanvas();
+                    drawScene();
+                }
             }
-        }, 250); // 250msのデバウンス
+        }, 250);
     });
     
     // --- 主要な関数 ---
@@ -95,8 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayHeight = canvas.height * scale;
         canvas.style.width = `${displayWidth}px`;
         canvas.style.height = `${displayHeight}px`;
-        canvasContainer.style.width = `${displayWidth}px`;
-        canvasContainer.style.height = `${displayHeight}px`;
         focusArea.style.top = '25%';
         focusArea.style.left = '25%';
         focusArea.style.width = '50%';
@@ -331,9 +336,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const snapThreshold = 5;
         const isHorizontallyCentered = Math.abs(parentCenter.x - areaCenter.x) < snapThreshold;
         const isVerticallyCentered = Math.abs(parentCenter.y - areaCenter.y) < snapThreshold;
-        focusArea.classList.toggle('centered', isHorizontallyCentered || isVerticallyCentered);
-        guideV.style.display = isHorizontallyCentered ? 'block' : 'none';
-        guideH.style.display = isVerticallyCentered ? 'block' : 'none';
+
+        // ガイド線は、リサイズ中には表示しない
+        if (focusState.isResizing) {
+            guideV.style.display = 'none';
+            guideH.style.display = 'none';
+        } else {
+            guideV.style.display = isHorizontallyCentered ? 'block' : 'none';
+            guideH.style.display = isVerticallyCentered ? 'block' : 'none';
+        }
+
+        // ドラッグ中のスナップ処理
         if (isHorizontallyCentered) {
             guideV.style.left = `${parentCenter.x}px`;
             if (focusState.isDragging) focusArea.style.left = `${parentCenter.x - areaRect.width / 2}px`;
