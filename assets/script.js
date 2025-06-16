@@ -112,18 +112,24 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // 画像読み込み時に線の太さを自動で調節する
         const reader = new FileReader();
         reader.onload = (event) => {
             originalImage = new Image();
             originalImage.onload = () => {
-                const referenceWidth = 1920;
-                const baseThickness = 50;
-                let initialThickness = (originalImage.width / referenceWidth) * baseThickness;
+                // 基準となるサイズを、一般的な画像の幅と高さの平均とする (FullHD 1920x1080)
+                const referenceSize = (1920 + 1080) / 2; 
+                const baseThickness = 50; // 基準サイズにおける線の太さ
+                
+                // 読み込んだ画像の幅と高さの平均サイズに基づいて初期の太さを計算
+                const imageAverageSize = (originalImage.width + originalImage.height) / 2;
+                let initialThickness = (imageAverageSize / referenceSize) * baseThickness;
                 initialThickness = Math.max(
                     parseFloat(lineThicknessInput.min), 
                     Math.min(initialThickness, parseFloat(lineThicknessInput.max))
                 );
                 lineThicknessInput.value = initialThickness;
+                
                 setupCanvas();
                 requestAnimationFrame(drawScene);
                 uploadPrompt.classList.add('hidden');
@@ -175,11 +181,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         const lineCount = parseInt(lineCountInput.value);
-        const lineThickness = parseFloat(lineThicknessInput.value); // 新しい値を取得
+        const lineThickness = parseFloat(lineThicknessInput.value);
         const isCircle = focusShapeSelect.value === 'circle';
         ctx.fillStyle = lineColorInput.value;
-
-        // 予めスライダーの値を取得しておく
         const randomWidthAmount = parseFloat(randomWidthInput.value);
         const randomLengthAmount = parseFloat(randomLengthInput.value);
 
