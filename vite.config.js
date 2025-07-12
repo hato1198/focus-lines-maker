@@ -9,7 +9,7 @@ export default defineConfig({
     vitePluginHtmlMinifierTerser()
   ],
   build: {
-    outDir: '../dist', // src/ から見た相対パスで dist に出力
+    outDir: '../dist',
     emptyOutDir: true,
     sourcemap: false,
     minify: 'esbuild',
