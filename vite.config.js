@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { htmlMinifier } from 'vite-plugin-html-minifier-terser';
+import htmlMinifier from 'vite-plugin-html-minifier-terser';
 
 export default defineConfig({
   root: 'src',
