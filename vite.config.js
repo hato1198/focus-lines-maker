@@ -1,11 +1,18 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  root: '.',           // index.html のある場所
-  base: './',          // 相対パスで出力する場合
+  root: 'src',         // HTML のある場所に変更
+  base: './',          // 相対パス
   build: {
-    outDir: 'dist',    // ビルド成果物のディレクトリ
-    sourcemap: false,  // 必要に応じて true に
-    minify: 'esbuild', // デフォルトで有効
+    outDir: '../dist', // src/ から見た相対パスで dist に出力
+    emptyOutDir: true,
+    sourcemap: false,
+    minify: 'esbuild',
+    rollupOptions: {
+      input: {
+        main: 'src/index.html',
+        subpage: 'src/subpage.html'
+      }
+    }
   },
 });
