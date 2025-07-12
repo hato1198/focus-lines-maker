@@ -9,12 +9,27 @@
 
 <url>
   <loc>https://focus-lines-maker.vercel.app/</loc>
-  <lastmod>2025-06-23T13:06:42+00:00</lastmod>
+  <lastmod>2025-07-12T06:30:34+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
+  <loc>https://focus-lines-maker.vercel.app/faq.html</loc>
+  <lastmod>2025-07-12T06:30:34+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
   <loc>https://focus-lines-maker.vercel.app/terms.html</loc>
-  <lastmod>2025-06-23T13:06:43+00:00</lastmod>
+  <lastmod>2025-07-12T06:30:34+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://focus-lines-maker.vercel.app/privacy.html</loc>
+  <lastmod>2025-07-12T06:30:34+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://focus-lines-maker.vercel.app/contact.html</loc>
+  <lastmod>2025-07-12T06:30:35+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 
