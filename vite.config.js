@@ -1,9 +1,13 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { vitePluginHtmlMinifierTerser } from 'vite-plugin-html-minifier-terser';
 
 export default defineConfig({
-  root: 'src',         // HTML のある場所に変更
-  base: '/',          // ルート相対パス
+  root: 'src',
+  base: '/',
+  plugins: [
+    vitePluginHtmlMinifierTerser()
+  ],
   build: {
     outDir: '../dist', // src/ から見た相対パスで dist に出力
     emptyOutDir: true,
