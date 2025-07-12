@@ -1,0 +1,26 @@
+{
+  "name": "focus-lines-maker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hato1198/focus-line.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hato1198/focus-line/issues"
+  },
+  "homepage": "https://github.com/hato1198/focus-line#readme",
+  "description": "",
+  "devDependencies": {
+    "vite": "^7.0.4"
+  }
+}
