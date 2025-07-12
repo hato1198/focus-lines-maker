@@ -6,7 +6,9 @@ export default defineConfig({
   root: 'src',
   base: '/',
   plugins: [
-    htmlMinifier()
+    htmlMinifier({
+      removeComments: true,
+    })
   ],
   build: {
     outDir: '../dist',
