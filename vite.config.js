@@ -1,12 +1,12 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { vitePluginHtmlMinifierTerser } from 'vite-plugin-html-minifier-terser';
+import { htmlMinifier } from 'vite-plugin-html-minifier-terser';
 
 export default defineConfig({
   root: 'src',
   base: '/',
   plugins: [
-    vitePluginHtmlMinifierTerser()
+    htmlMinifier()
   ],
   build: {
     outDir: '../dist',
