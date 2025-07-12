@@ -3,7 +3,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   root: 'src',         // HTML のある場所に変更
-  base: './',          // 相対パス
+  base: '/',          // ルート相対パス
   build: {
     outDir: '../dist', // src/ から見た相対パスで dist に出力
     emptyOutDir: true,
