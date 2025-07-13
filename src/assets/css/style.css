@@ -502,8 +502,8 @@ legend {
 
 .controls input[type="range"]::-moz-range-thumb {
     border: none;
-    width: 18px;
-    height: 18px;
+    width: 14px;
+    height: 14px;
     border: 2px solid #fff;
     border-radius: 9999px;
     background: var(--primary-color);
