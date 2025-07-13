@@ -137,10 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayHeight = canvas.height * scale;
         canvas.style.width = `${displayWidth}px`;
         canvas.style.height = `${displayHeight}px`;
-        focusArea.style.top = '25%';
-        focusArea.style.left = '25%';
-        focusArea.style.width = '50%';
-        focusArea.style.height = '50%';
+        focusArea.style.top = '15%';
+        focusArea.style.left = '15%';
+        focusArea.style.width = '70%';
+        focusArea.style.height = '70%';
         focusArea.classList.toggle('circle', focusShapeSelect.value === 'circle');
     }
 
