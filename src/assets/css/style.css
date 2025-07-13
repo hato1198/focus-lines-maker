@@ -480,7 +480,7 @@ legend {
     width: 100%;
     height: 8px;
     border-radius: 9999px;
-    background: linear-gradient(90deg, var(--primary-hover-color) 30%, var(--border-color) 30%);
+    background: var(--border-color);
     cursor: pointer;
 }
 
