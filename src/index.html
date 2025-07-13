@@ -9,10 +9,20 @@
     <link rel="icon" href="/favicon.png" type="image/x-icon"/>
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon"/>
 
-    <!-- フォント -->
+    <!-- フォント（非同期読み込み） -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap"
+          as="style">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap"
+          media="print"
+          onload="this.media='all'">
+    <noscript>
+    <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap">
+    </noscript>
 
     <!-- メインスタイル -->
     <link rel="stylesheet" href="./assets/css/style.css">
