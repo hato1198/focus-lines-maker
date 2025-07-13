@@ -1052,8 +1052,6 @@ legend {
     canvas {
         max-height: 80vh;
     }
-    .guide-line.horizontal {height: 1px;}
-    .guide-line.vertical {width: 1px;}
     .controls {
         width: 100%;
         box-sizing: border-box;

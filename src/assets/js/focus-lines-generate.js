@@ -294,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.classList.contains('resize-handle')) {
             focusState.isResizing = true;
             focusState.resizeDirection = e.target.dataset.direction;
+            focusState.aspectRatio = focusState.startWidth / focusState.startHeight;
         } else {
             focusState.isDragging = true;
         }
@@ -345,13 +346,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Shiftキーによるアスペクト比固定の処理
-            if (e.shiftKey) {
-                // 幅と高さの大きい方を基準にする
-                const size = Math.max(newWidth, newHeight);
-                newWidth = size;
-                newHeight = size;
+            if (e.shiftKey && focusState.startHeight > 0) { // ゼロ除算を避ける
+                const originalAspectRatio = focusState.startWidth / focusState.startHeight;
 
-                // ドラッグ方向に応じて、位置を再調整する
+                // マウス移動から計算された新しいアスペクト比（絶対値を使用）
+                const newAspectRatio = Math.abs(newWidth) / Math.abs(newHeight);
+
+                // 元の図形よりも横長になったか、縦長になったかで基準辺を動的に決定する
+                if (newAspectRatio > originalAspectRatio) {
+                    // 横長になった場合 -> 幅を基準に高さを計算
+                    newHeight = newWidth / originalAspectRatio;
+                } else {
+                    // 縦長になった場合 -> 高さを基準に幅を計算
+                    newWidth = newHeight * originalAspectRatio;
+                }
+
+                // リサイズ方向に応じて、位置を再調整する
                 if (focusState.resizeDirection.includes('n')) {
                     newTop = focusState.startTop + focusState.startHeight - newHeight;
                 }
