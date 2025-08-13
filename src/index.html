@@ -9,7 +9,7 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon"/>
 
-    <!-- フォント（非同期読み込み） -->
+    <!-- フォント -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload"
@@ -26,6 +26,9 @@
 
     <!-- メインスタイル -->
     <link rel="stylesheet" href="./assets/css/style.css">
+
+    <!-- Coloris CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css"/>
     
     <!-- ページタイトル -->
     <title>集中線メーカー | 画像に集中線を追加できる無料ツール</title>
@@ -110,7 +113,7 @@
             <fieldset>
                 <legend>線</legend>
                 <label for="line-color">色:</label>
-                <input type="color" id="line-color">
+                <input type="text" id="line-color" value="#000000" data-coloris>
 
                 <label for="line-count">本数:</label>
                 <input type="range" id="line-count" min="10" max="510" value="210" step="5">
@@ -417,6 +420,7 @@
         </nav>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
     <script type="module" src="./assets/js/focus-lines-generate.js"></script>
     <script type="module" src="./assets/js/range-style.js"></script>
     <script type="module" src="./assets/js/get-now-year.js"></script>
