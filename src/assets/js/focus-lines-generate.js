@@ -174,9 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const lineCount = parseInt(lineCountInput.value);
         let lineThickness = parseFloat(lineThicknessInput.value);
         
-        // 基準となる画像サイズ（FullHD 1920x1080 の平均）
+        // 基準となる画像 (1920x1080) のwとhの平均サイズ
         const referenceSize = (1920 + 1080) / 2;
-        // 現在の画像の平均サイズ
+        // 現在の画像のwとhの平均サイズ
         const imageAverageSize = (w + h) / 2;
         // 画像サイズに基づいて太さを補正
         const sizeCorrectionFactor = imageAverageSize / referenceSize;
@@ -220,7 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const distance = Math.sqrt(Math.pow(outerPoint.x - innerPoint.x, 2) + Math.pow(outerPoint.y - innerPoint.y, 2));
             // 線の太さを、線の長さと太さスライダーの値で決定
-            let baseWidth = (distance / w) * lineThickness;
+            const imageAverageSize = (w + h) / 2; // wとhの平均値を計算
+            let baseWidth = (distance / imageAverageSize) * lineThickness;
 
             if (randomWidthAmount > 0) {
                 baseWidth *= 1 + randomWidthAmount * (Math.random() * 2 - 1);
