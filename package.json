@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hato1198/focus-line.git"
+    "url": "git+https://github.com/hato1198/focus-lines-maker.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hato1198/focus-line/issues"
+    "url": "https://github.com/hato1198/focus-lines-maker/issues"
   },
-  "homepage": "https://github.com/hato1198/focus-line#readme",
+  "homepage": "https://github.com/hato1198/focus-lines-maker#readme",
   "description": "",
   "devDependencies": {
     "vite": "^7.0.4",
