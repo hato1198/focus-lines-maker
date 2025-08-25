@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lineThicknessInput = document.getElementById('line-thickness');
     const randomnessInput = document.getElementById('randomness');
 
-
+    let originalFileName = '';
     let originalImage = null;
     let focusState = {
         isDragging: false, isResizing: false,
@@ -117,6 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('画像ファイルを選択してください。');
             return;
         }
+
+        originalFileName = file.name;
 
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -316,8 +318,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setTimeout(() => {
             try {
+                // 元のファイル名から拡張子を除いた部分を取得
+                const baseName = originalFileName.includes('.')
+                    ? originalFileName.substring(0, originalFileName.lastIndexOf('.'))
+                    : originalFileName;
+                
+                // 新しいファイル名を生成
+                const newFileName = `${baseName}-focus.png`;
+
                 const link = document.createElement('a');
-                link.download = 'focuslines.png';
+                link.download = newFileName; // 生成したファイル名を設定
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             } catch (e) {
