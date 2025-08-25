@@ -112,23 +112,26 @@
 
             <fieldset>
                 <legend>線</legend>
+                <label for="line-type">タイプ:</label>
+                <div class="select-wrapper">
+                    <select id="line-type">
+                        <option value="normal" selected>ノーマル</option>
+                        <option value="manga">漫画風</option>
+                        <option value="halo">後光</option>
+                    </select>
+                </div>
+
                 <label for="line-color">色:</label>
                 <input type="text" id="line-color" value="#000000" data-coloris>
 
                 <label for="line-count">本数:</label>
-                <input type="range" id="line-count" min="10" max="510" value="210" step="5">
-                
+                <input type="range" id="line-count" min="0" max="525" value="210" step="5">
+
                 <label for="line-thickness">太さ:</label>
-                <input type="range" id="line-thickness" min="1" max="151" value="61" step="1">
-            </fieldset>
+                <input type="range" id="line-thickness" min="0" max="150" value="60" step="1">
 
-            <fieldset>
-                <legend>ランダム度</legend>
-                <label for="random-length">線の長さ:</label>
-                <input type="range" id="random-length" min="0" max="1" value="0.5" step="0.05">
-
-                <label for="random-width">線の密度:</label>
-                <input type="range" id="random-width" min="0" max="1" value="0.5" step="0.05">
+                <label for="randomness">ランダム性:</label>
+                <input type="range" id="randomness" min="0" max="1" value="0.5" step="0.05">
             </fieldset>
 
             <button id="download-btn" class="button primary" disabled>画像をダウンロード</button>
@@ -187,7 +190,7 @@
                         <h3>範囲と設定を調整</h3>
                     </div>
                     <img src="./assets/images/usage-2.webp" alt="集中線の範囲や設定を調整する手順のイラスト" class="card-image">
-                    <p>青い枠をドラッグ＆リサイズして基準とする範囲を決め、右側のパネルで線の色や太さを調整します。</p>
+                    <p>青い枠をドラッグ＆リサイズして基準とする範囲を決め、設定パネルで線の色や太さを調整します。</p>
                 </div>
                 <div class="card">
                     <div class="card-header">
@@ -231,7 +234,7 @@
                 <div class="card">
                     <img src="./assets/images/tip-random.webp" alt="集中線のランダム度を変えた比較画像" class="card-image">
                     <div class="card-content">
-                        <h3>ランダム度</h3>
+                        <h3>ランダム性</h3>
                         <p>値を大きくすると、線の長さや配置に「揺らぎ」が加わり、手書きのような温かみや荒々しさを表現できます。</p>
                     </div>
                 </div>
@@ -421,7 +424,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js"></script>
-    <script type="module" src="./assets/js/focus-lines-generate.js"></script>
+    <script type="module" src="./assets/js/main.js"></script>
     <script type="module" src="./assets/js/range-style.js"></script>
     <script type="module" src="./assets/js/get-now-year.js"></script>
 </body>

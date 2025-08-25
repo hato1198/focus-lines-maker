@@ -19,11 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const guideH = document.getElementById('guide-line-h');
     const guideV = document.getElementById('guide-line-v');
     const focusShapeSelect = document.getElementById('focus-shape');
+    const lineTypeSelect = document.getElementById('line-type');
     const lineColorInput = document.getElementById('line-color');
     const lineCountInput = document.getElementById('line-count');
     const lineThicknessInput = document.getElementById('line-thickness');
-    const randomLengthInput = document.getElementById('random-length');
-    const randomWidthInput = document.getElementById('random-width');
+    const randomnessInput = document.getElementById('randomness');
+
 
     let originalImage = null;
     let focusState = {
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     imageLoader.addEventListener('change', handleImageUpload);
     downloadBtn.addEventListener('click', downloadImage);
 
-    [focusShapeSelect, lineColorInput, lineCountInput, lineThicknessInput, randomLengthInput, randomWidthInput].forEach(el => {
+    [focusShapeSelect, lineTypeSelect, lineColorInput, lineCountInput, lineThicknessInput, randomnessInput].forEach(el => {
         el.addEventListener('input', () => requestAnimationFrame(drawScene));
     });
 
@@ -152,8 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drawScene() {
         if (!originalImage) return;
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+
+        // --- 集中線の描画 ---
         drawFocusLines();
     }
 
@@ -174,71 +178,101 @@ document.addEventListener('DOMContentLoaded', () => {
         const lineCount = parseInt(lineCountInput.value);
         let lineThickness = parseFloat(lineThicknessInput.value);
         
-        // 基準となる画像 (1920x1080) のwとhの平均サイズ
         const referenceSize = (1920 + 1080) / 2;
-        // 現在の画像のwとhの平均サイズ
         const imageAverageSize = (w + h) / 2;
-        // 画像サイズに基づいて太さを補正
         const sizeCorrectionFactor = imageAverageSize / referenceSize;
         lineThickness *= sizeCorrectionFactor;
 
         const isCircle = focusShapeSelect.value === 'circle';
-        ctx.fillStyle = lineColorInput.value;
-        const randomWidthAmount = parseFloat(randomWidthInput.value);
-        const randomLengthAmount = parseFloat(randomLengthInput.value);
+        const lineType = lineTypeSelect.value;
+        const randomAmount = parseFloat(randomnessInput.value);
 
-        for (let i = 0; i < lineCount; i++) {
-            // 線の角度を計算。間隔のランダム化もここで行う。
-            let angleOffset = 0;
-            if (randomWidthAmount > 0) {
-                // オフセットを-0.5から+0.5の範囲で生成し、ランダム度でスケールする
-                // これにより、線が隣の線の位置の途中までずれる可能性がある
-                angleOffset = (Math.random() - 0.5) * randomWidthAmount;
+        ctx.fillStyle = lineColorInput.value;
+        ctx.strokeStyle = lineColorInput.value;
+        ctx.lineWidth = Math.max(1, lineThickness * 0.08);
+
+        const drawLoop = (callback) => {
+            if (lineType === 'manga') {
+                let i = 0;
+                while (i < lineCount) {
+                    // 1. 先に間隔を空ける
+                    const baseGapSize = 5;
+                    const gapVariation = (Math.random() - 0.5) * baseGapSize * 2 * randomAmount;
+                    const gapSize = Math.round(Math.max(1, baseGapSize + gapVariation));
+                    i += gapSize;
+
+                    // 間隔を空けた結果、描写範囲を超えたらループを抜ける
+                    if (i >= lineCount) break;
+
+                    // 2. 次に線のグループを描写
+                    const baseGroupSize = 5;
+                    const groupVariation = (Math.random() - 0.5) * baseGroupSize * 2 * randomAmount;
+                    const groupSize = Math.round(Math.max(1, baseGroupSize + groupVariation));
+                    
+                    for (let j = 0; j < groupSize && i < lineCount; j++, i++) {
+                        callback(i, lineCount, randomAmount);
+                    }
+                }
+            } else {
+                for (let i = 0; i < lineCount; i++) {
+                    callback(i, lineCount, randomAmount);
+                }
             }
-            // オフセットを加えた値で角度を計算
-            const angle = ((i + angleOffset) / lineCount) * 2 * Math.PI;
+        };
+
+        drawLoop((i, count, random) => {
+            let angleOffset = 0;
+            if (random > 0) {
+                angleOffset = (Math.random() - 0.5) * random;
+            }
+            const angle = ((i + angleOffset) / count) * 2 * Math.PI;
 
             const buffer = Math.max(w, h);
             const outerBounds = {x: -buffer, y: -buffer, width: w + buffer*2, height: h + buffer*2};
             const outerPoint = getIntersectionWithRect(focusCenter, angle, outerBounds);
-            if (!outerPoint) continue;
+            if (!outerPoint) return;
 
             let innerPoint = isCircle ? getIntersectionWithEllipse(focusCenter, angle, focusRect) : getIntersectionWithRect(focusCenter, angle, focusRect);
-            if (!innerPoint) continue;
-
-            if (randomLengthAmount > 0) {
+            if (!innerPoint) return;
+            
+            if (random > 0) {
                 const dx = innerPoint.x - focusCenter.x;
                 const dy = innerPoint.y - focusCenter.y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
                 if (dist > 0) {
-                    const randomScale = 1 + (randomLengthAmount / 2) * (Math.random() * 2 - 1);
+                    const randomScale = 1 + (random / 2) * (Math.random() * 2 - 1);
                     const newDist = dist * randomScale;
                     innerPoint.x = focusCenter.x + (dx / dist) * newDist;
                     innerPoint.y = focusCenter.y + (dy / dist) * newDist;
                 }
             }
-
-            const distance = Math.sqrt(Math.pow(outerPoint.x - innerPoint.x, 2) + Math.pow(outerPoint.y - innerPoint.y, 2));
-            // 線の太さを、線の長さと太さスライダーの値で決定
-            const imageAverageSize = (w + h) / 2; // wとhの平均値を計算
-            let baseWidth = (distance / imageAverageSize) * lineThickness;
-
-            if (randomWidthAmount > 0) {
-                baseWidth *= 1 + randomWidthAmount * (Math.random() * 2 - 1);
-                baseWidth = Math.max(0, baseWidth);
-            }
-
-            const perpAngle = angle + Math.PI / 2;
-            const dx = Math.cos(perpAngle) * baseWidth / 2;
-            const dy = Math.sin(perpAngle) * baseWidth / 2;
             
-            ctx.beginPath();
-            ctx.moveTo(innerPoint.x, innerPoint.y);
-            ctx.lineTo(outerPoint.x + dx, outerPoint.y + dy);
-            ctx.lineTo(outerPoint.x - dx, outerPoint.y - dy);
-            ctx.closePath();
-            ctx.fill();
-        }
+            if (lineType === 'halo') {
+                ctx.beginPath();
+                ctx.moveTo(innerPoint.x, innerPoint.y);
+                ctx.lineTo(outerPoint.x, outerPoint.y);
+                ctx.stroke();
+            } else {
+                const distance = Math.sqrt(Math.pow(outerPoint.x - innerPoint.x, 2) + Math.pow(outerPoint.y - innerPoint.y, 2));
+                let baseWidth = (distance / imageAverageSize) * lineThickness;
+
+                if (random > 0) {
+                    baseWidth *= 1 + random * (Math.random() * 2 - 1);
+                    baseWidth = Math.max(0, baseWidth);
+                }
+
+                const perpAngle = angle + Math.PI / 2;
+                const dx = Math.cos(perpAngle) * baseWidth / 2;
+                const dy = Math.sin(perpAngle) * baseWidth / 2;
+                
+                ctx.beginPath();
+                ctx.moveTo(innerPoint.x, innerPoint.y);
+                ctx.lineTo(outerPoint.x + dx, outerPoint.y + dy);
+                ctx.lineTo(outerPoint.x - dx, outerPoint.y - dy);
+                ctx.closePath();
+                ctx.fill();
+            }
+        });
     }
     
     // ヘルパー関数群
@@ -276,10 +310,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function downloadImage() {
-        const link = document.createElement('a');
-        link.download = 'focuslines.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        const originalText = downloadBtn.textContent;
+        downloadBtn.textContent = '保存中……';
+        downloadBtn.disabled = true;
+
+        setTimeout(() => {
+            try {
+                const link = document.createElement('a');
+                link.download = 'focuslines.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (e) {
+                console.error('画像のダウンロードに失敗しました。', e);
+                alert('画像の保存に失敗しました。');
+            } finally {
+                downloadBtn.textContent = originalText;
+                downloadBtn.disabled = false;
+            }
+        }, 0);
     }
 
     // --- フォーカスエリアの操作ロジック ---
@@ -352,23 +400,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 newTop = focusState.startTop + dy;
             }
 
-            // Shiftキーによるアスペクト比固定の処理
-            if (e.shiftKey && focusState.startHeight > 0) { // ゼロ除算を避ける
+            if (e.shiftKey && focusState.startHeight > 0) {
                 const originalAspectRatio = focusState.startWidth / focusState.startHeight;
-
-                // マウス移動から計算された新しいアスペクト比（絶対値を使用）
                 const newAspectRatio = Math.abs(newWidth) / Math.abs(newHeight);
-
-                // 元の図形よりも横長になったか、縦長になったかで基準辺を動的に決定する
                 if (newAspectRatio > originalAspectRatio) {
-                    // 横長になった場合 -> 幅を基準に高さを計算
                     newHeight = newWidth / originalAspectRatio;
                 } else {
-                    // 縦長になった場合 -> 高さを基準に幅を計算
                     newWidth = newHeight * originalAspectRatio;
                 }
-
-                // リサイズ方向に応じて、位置を再調整する
                 if (focusState.resizeDirection.includes('n')) {
                     newTop = focusState.startTop + focusState.startHeight - newHeight;
                 }
@@ -377,13 +416,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // リサイズ時の境界制限
             if (newLeft < 0) {
-                newWidth += newLeft; // newLeftは負の値なので、幅を減らす
+                newWidth += newLeft;
                 newLeft = 0;
             }
             if (newTop < 0) {
-                newHeight += newTop; // newTopは負の値なので、高さを減らす
+                newHeight += newTop;
                 newTop = 0;
             }
             if (newLeft + newWidth > parentWidth) {
@@ -393,7 +431,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 newHeight = parentHeight - newTop;
             }
 
-            // 最小サイズを維持
             if(newWidth > 20) {
                 focusArea.style.left = `${newLeft}px`;
                 focusArea.style.width = `${newWidth}px`;
@@ -428,7 +465,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isHorizontallyCentered = Math.abs(parentCenter.x - areaCenter.x) < snapThreshold;
         const isVerticallyCentered = Math.abs(parentCenter.y - areaCenter.y) < snapThreshold;
 
-        // ガイド線は、リサイズ中には表示しない
         if (focusState.isResizing) {
             guideV.style.display = 'none';
             guideH.style.display = 'none';
@@ -437,7 +473,6 @@ document.addEventListener('DOMContentLoaded', () => {
             guideH.style.display = isVerticallyCentered ? 'block' : 'none';
         }
 
-        // ドラッグ中のスナップ処理
         if (isHorizontallyCentered) {
             guideV.style.left = `${parentCenter.x}px`;
             if (focusState.isDragging) focusArea.style.left = `${parentCenter.x - areaRect.width / 2}px`;
