@@ -316,27 +316,37 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadBtn.textContent = '保存中……';
         downloadBtn.disabled = true;
 
+        // canvas.toBlob() を使用して非同期で処理
         setTimeout(() => {
-            try {
-                // 元のファイル名から拡張子を除いた部分を取得
-                const baseName = originalFileName.includes('.')
-                    ? originalFileName.substring(0, originalFileName.lastIndexOf('.'))
-                    : originalFileName;
-                
-                // 新しいファイル名を生成
-                const newFileName = `${baseName}-focus.png`;
+            canvas.toBlob(blob => {
+                if (!blob) {
+                    console.error('CanvasからBlobの生成に失敗しました。');
+                    alert('画像の保存に失敗しました。');
+                    downloadBtn.textContent = originalText;
+                    downloadBtn.disabled = false;
+                    return;
+                }
 
-                const link = document.createElement('a');
-                link.download = newFileName; // 生成したファイル名を設定
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            } catch (e) {
-                console.error('画像のダウンロードに失敗しました。', e);
-                alert('画像の保存に失敗しました。');
-            } finally {
-                downloadBtn.textContent = originalText;
-                downloadBtn.disabled = false;
-            }
+                try {
+                    const baseName = originalFileName.includes('.')
+                        ? originalFileName.substring(0, originalFileName.lastIndexOf('.'))
+                        : originalFileName;
+                    
+                    const newFileName = `${baseName}-focus.png`;
+                    const link = document.createElement('a');
+                    link.download = newFileName;
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                } catch (e) {
+                    console.error('画像のダウンロードに失敗しました。', e);
+                    alert('画像の保存に失敗しました。');
+                } finally {
+                    downloadBtn.textContent = originalText;
+                    downloadBtn.disabled = false;
+                }
+            }, 'image/png');
         }, 0);
     }
 
