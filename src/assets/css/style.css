@@ -170,7 +170,7 @@ footer nav a:hover {
     display: inline-block;
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 8px;
+    border-radius: 9999px;
     background-color: #6c757d;
     color: white;
     cursor: pointer;
