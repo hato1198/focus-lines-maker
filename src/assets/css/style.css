@@ -560,6 +560,19 @@ legend {
     border-radius: 0 0.5rem 0.5rem 0;
 }
 
+.controls input[type="text"]:not(.clr-field input) {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+}
+
 #download-btn {
     margin-top: 0.5rem;
 }
