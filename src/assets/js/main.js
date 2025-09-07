@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Colorisの初期化と設定
+    Coloris({
+        alpha: true,
+        formatToggle: true
+    });
+
     // --- DOM要素の取得 ---
     const imageLoader = document.getElementById('image-loader');
     const canvas = document.getElementById('canvas');
