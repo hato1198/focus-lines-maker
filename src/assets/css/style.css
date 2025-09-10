@@ -37,7 +37,7 @@
 :root {
     --primary-color: #007bff;
     --primary-hover-color: #0056b3;
-    --background-color: #f0f2f5;
+    --background-color: #f8faff;
     --container-bg-color: #ffffff;
     --light-bg-color: #f9f9f9;
     --text-color: #333;
@@ -81,7 +81,8 @@ header {
     text-align: center;
     padding: 0.5rem 1rem;
     background-color: var(--container-bg-color);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
 }
 
 header h1 {
@@ -135,7 +136,7 @@ footer nav a:hover {
     padding: 2rem;
     background-color: var(--container-bg-color);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 .page-container.form-container {
     max-width: 700px;
@@ -172,7 +173,8 @@ footer nav a:hover {
     color: white;
     cursor: pointer;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    font-weight: 300;
     transition: background-color 0.2s ease;
     width: 100%;
     box-sizing: border-box;
@@ -198,20 +200,6 @@ footer nav a:hover {
     background-color: #ccc;
     cursor: not-allowed;
     transition: none;
-}
-
-.button.button-secondary {
-    background-color: transparent;
-    border: 2px solid var(--primary-color);
-    color: var(--primary-color);
-    padding: 0.6rem 1.5rem;
-    width: auto;
-    text-decoration: none;
-}
-
-.button.button-secondary:hover:not(:disabled) {
-    background-color: var(--primary-color);
-    color: #fff;
 }
 
 
@@ -257,17 +245,6 @@ footer nav a:hover {
     font-weight: 500;
 }
 
-.card-link-wrapper {
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-.card-link-wrapper .card-content {
-    flex-grow: 1;
-}
 
 /* 5.3. Section Titles */
 .page-title-container {
@@ -275,7 +252,7 @@ footer nav a:hover {
     text-align: center;
 }
 
-.page-title-container .section-subtitle {
+.page-title-container {
     margin-bottom: 0;
 }
 
@@ -296,25 +273,27 @@ footer nav a:hover {
     margin: 0.5rem auto 0;
 }
 
-.section-subtitle {
-    text-align: center;
-    color: #666;
-    margin-top: -2rem;
-    margin-bottom: 2.5rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 
 /* --- 6. PAGE: MAIN APP (index.html) --- */
 
 /* 6.1. App Layout */
+.app-background {
+    background-color: #ffffff;
+    background-image:
+        linear-gradient(to top, transparent 50%, var(--background-color) 100%),
+        linear-gradient(rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+    background-size: 
+        100% 100%,
+        25px 25px,
+        25px 25px;
+}
+
 .app-container {
     display: flex;
     flex-wrap: wrap;
     gap: 1.5rem;
-    padding: 1.5rem;
+    padding: 3rem 1.5rem;
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
@@ -327,8 +306,8 @@ footer nav a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #e9ecef;
-    border: 2px dashed var(--border-color);
+    background-color: #f0f2f5;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     position: relative;
     overflow: hidden;
@@ -337,11 +316,11 @@ footer nav a:hover {
 
 .controls {
     flex: 1;
-    min-width: 280px;
+    min-width: 300px;
     background-color: var(--container-bg-color);
     padding: 1.5rem;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     align-self: flex-start;
 }
 
@@ -442,21 +421,62 @@ canvas {
 }
 
 .controls label {
-    display: block;
+    display: inline;
     pointer-events: none;
-    margin-top: 0.6rem;
-    margin-bottom: 0.25rem;
 }
 
-.controls label:first-of-type {
-    margin-top: 0;
+.tooltip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid #bbb;
+    background-color: white;
+    color: #bbb;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: help;
+    position: relative;
+    pointer-events: auto;
+    user-select: none;
+}
+
+.tooltip-icon::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-20%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 300;
+    white-space: pre-line;
+    width: max-content;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    z-index: 20;
+}
+
+.tooltip-icon:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 fieldset {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     margin-bottom: 0.8rem;
-    padding: 0.6rem 1rem 0.9rem 1rem;
+    padding: 0.7rem 1rem 1.2rem 1rem;
+    display: grid;
+    grid-template-columns: 85px 1fr;
+    align-items: center;
+    gap: 1.5rem 1rem;
 }
 
 legend {
@@ -465,7 +485,6 @@ legend {
 
 .controls input[type="range"] {
     appearance: none;
-    width: 100%;
     height: 8px;
     border-radius: 9999px;
     background: var(--border-color);
@@ -505,7 +524,6 @@ legend {
 
 .select-wrapper {
     position: relative;
-    width: 100%;
 }
 
 .select-wrapper::after {
@@ -540,7 +558,6 @@ legend {
 }
 
 .controls .clr-field {
-    width: 100%;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
@@ -549,7 +566,6 @@ legend {
 
 .controls .clr-field input {
     width: 100%;
-    height: 100%;
     padding: 0.5rem 2rem 0.5rem 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
@@ -562,7 +578,6 @@ legend {
 
 .controls input[type="text"]:not(.clr-field input) {
     width: 100%;
-    height: 100%;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
@@ -573,8 +588,23 @@ legend {
     margin-bottom: 0.2rem;
 }
 
-#download-btn {
-    margin-top: 0.5rem;
+.button-group {
+    display: flex;
+    margin: 1.1rem 0 0.9rem;
+    gap: 0.2em;
+}
+
+.button-group .button {
+    padding: 0.75rem;
+    border-radius: 0;
+}
+.button-group .button:first-child {
+    border-radius: 9999px 0 0 9999px;
+    padding-left: 1rem;
+}
+.button-group .button:last-child {
+    border-radius: 0 9999px 9999px 0;
+    padding-right: 1rem;
 }
 
 /*
@@ -768,6 +798,7 @@ legend {
     background-color: var(--container-bg-color);
     border-radius: 8px;
     transition: background-color 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
 .faq-question {
@@ -879,10 +910,6 @@ legend {
     .section-title {
         font-size: 1.5rem;
     }
-    .section-subtitle {
-        margin-top: -1.5rem;
-        margin-bottom: 2rem;
-    }
     .card-header {
         padding: 1rem;
     }
@@ -916,8 +943,6 @@ legend {
     }
     .controls label {
         font-size: 0.95rem;
-        margin-top: 0.4rem;
-        margin-bottom: 0.1rem;
     }
     fieldset {
         padding: 0.4rem 1rem 0.6rem 1rem;
@@ -963,25 +988,6 @@ legend {
     }
     .tips-grid .card p {
         font-size: 0.9rem;
-    }
-    .comparison-grid {
-        gap: 1.5rem;
-    }
-    .comparison-item {
-        padding: 1rem;
-    }
-    .image-comparison {
-        flex-direction: column;
-    }
-    .developer-profile {
-        flex-direction: column;
-        text-align: center;
-    }
-    .profile-text p {
-        font-size: 0.9rem;
-    }
-    .profile-links {
-        text-align: center;
     }
 
     /* Subpages */

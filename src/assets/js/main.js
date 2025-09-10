@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
         alpha: true,
         formatToggle: true
     });
+    // ヘルプアイコンのクリック無効化
+    document.querySelectorAll('.tooltip-icon').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            e.preventDefault();
+        });
+    });
 
     // --- DOM要素の取得 ---
     const imageLoader = document.getElementById('image-loader');
@@ -13,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvasContainer = document.getElementById('canvas-container');
     const workspace = document.querySelector('.workspace');
     const downloadBtn = document.getElementById('download-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const changeImageBtn = document.getElementById('change-image-btn');
 
     // --- 設定項目の取得 ---
     const focusArea = document.getElementById('focus-area');
@@ -25,7 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const lineThicknessInput = document.getElementById('line-thickness');
     const randomnessInput = document.getElementById('randomness');
 
+    // --- 初期値と状態管理 ---
+    const defaultSettings = {
+        focusShape: 'rectangle',
+        lineType: 'normal',
+        lineColor: '#000000',
+        lineCount: '210',
+        lineThickness: '60',
+        randomness: '0.5'
+    };
     let originalFileName = '';
+    let originalFileType = 'image/png';
     let originalImage = null;
     let focusState = {
         isDragging: false, isResizing: false,
@@ -36,12 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- イベントリスナーの設定 ---
     imageLoader.addEventListener('change', handleImageUpload);
     downloadBtn.addEventListener('click', downloadImage);
+    resetBtn.addEventListener('click', resetSettings);
+    changeImageBtn.addEventListener('click', () => imageLoader.click());
 
     [focusShapeSelect, lineTypeSelect, lineColorInput, lineCountInput, lineThicknessInput, randomnessInput].forEach(el => {
         el.addEventListener('input', () => requestAnimationFrame(drawScene));
     });
 
-    // マウス操作とタッチ操作の両方に対応
     focusArea.addEventListener('mousedown', handleInteractionStart);
     document.addEventListener('mousemove', handleInteractionMove);
     document.addEventListener('mouseup', handleInteractionEnd);
@@ -54,17 +73,14 @@ document.addEventListener('DOMContentLoaded', () => {
     workspace.addEventListener('dragleave', handleDragLeave, false);
     workspace.addEventListener('drop', handleDrop, false);
     
-    // ウィンドウリサイズへの対応
     let resizeTimer;
-    // 最後に記録したウィンドウ幅を保持
     let lastWindowWidth = window.innerWidth; 
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
             const currentWindowWidth = window.innerWidth;
-            // 幅が変わった場合のみ再描画を実行する
             if (currentWindowWidth !== lastWindowWidth) {
-                lastWindowWidth = currentWindowWidth; // 新しい幅を記録
+                lastWindowWidth = currentWindowWidth;
                 if (originalImage) {
                     setupCanvas();
                     drawScene();
@@ -110,15 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // ファイルを読み込み、画像として処理する共通関数
     function loadImageFile(file) {
-        // 画像ファイル以外は処理しない
         if (!file.type.startsWith('image/')) {
             alert('画像ファイルを選択してください。');
             return;
         }
 
         originalFileName = file.name;
+        originalFileType = file.type;
 
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -129,6 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 uploadPrompt.classList.add('hidden');
                 canvasContainer.classList.remove('hidden');
                 downloadBtn.disabled = false;
+                resetBtn.disabled = false;
+                changeImageBtn.disabled = false;
             };
             originalImage.src = event.target.result;
         };
@@ -158,8 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
-
-        // --- 集中線の描画 ---
         drawFocusLines();
     }
 
@@ -197,16 +212,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lineType === 'manga') {
                 let i = 0;
                 while (i < lineCount) {
-                    // 1. 先に間隔を空ける
                     const baseGapSize = 5;
                     const gapVariation = (Math.random() - 0.5) * baseGapSize * 2 * randomAmount;
                     const gapSize = Math.round(Math.max(1, baseGapSize + gapVariation));
                     i += gapSize;
 
-                    // 間隔を空けた結果、描写範囲を超えたらループを抜ける
                     if (i >= lineCount) break;
 
-                    // 2. 次に線のグループを描写
                     const baseGroupSize = 5;
                     const groupVariation = (Math.random() - 0.5) * baseGroupSize * 2 * randomAmount;
                     const groupSize = Math.round(Math.max(1, baseGroupSize + groupVariation));
@@ -276,8 +288,30 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    function resetSettings() {
+        focusShapeSelect.value = defaultSettings.focusShape;
+        lineTypeSelect.value = defaultSettings.lineType;
+        lineColorInput.value = defaultSettings.lineColor;
+        lineColorInput.dispatchEvent(new Event('input', { bubbles: true }));
+        lineCountInput.value = defaultSettings.lineCount;
+        lineThicknessInput.value = defaultSettings.lineThickness;
+        randomnessInput.value = defaultSettings.randomness;
+
+        document.querySelectorAll('input[type="range"]').forEach(el => {
+            el.dispatchEvent(new Event('input'));
+        });
+
+        focusArea.style.top = '15%';
+        focusArea.style.left = '15%';
+        focusArea.style.width = '70%';
+        focusArea.style.height = '70%';
+        focusArea.classList.toggle('circle', defaultSettings.focusShape === 'circle');
+
+        requestAnimationFrame(drawScene);
+    }
     
-    // ヘルパー関数群
+    // --- ヘルパー関数群 ---
     function getIntersectionWithRect(origin, angle, rect) {
         const cos = Math.cos(angle), sin = Math.sin(angle);
         const dist = Math.max(rect.width, rect.height) * 2;
@@ -316,7 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadBtn.textContent = '保存中……';
         downloadBtn.disabled = true;
 
-        // canvas.toBlob() を使用して非同期で処理
+        const isJpeg = originalFileType === 'image/jpeg';
+        const fileExtension = isJpeg ? 'jpg' : 'png';
+        const mimeType = isJpeg ? 'image/jpeg' : 'image/png';
+
         setTimeout(() => {
             canvas.toBlob(blob => {
                 if (!blob) {
@@ -332,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ? originalFileName.substring(0, originalFileName.lastIndexOf('.'))
                         : originalFileName;
                     
-                    const newFileName = `${baseName}-focus.png`;
+                    const newFileName = `${baseName}-focus.${fileExtension}`;
                     const link = document.createElement('a');
                     link.download = newFileName;
                     const url = URL.createObjectURL(blob);
@@ -346,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     downloadBtn.textContent = originalText;
                     downloadBtn.disabled = false;
                 }
-            }, 'image/png');
+            }, mimeType);
         }, 0);
     }
 
