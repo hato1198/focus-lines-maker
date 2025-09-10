@@ -588,6 +588,10 @@ legend {
     margin-bottom: 0.2rem;
 }
 
+.clr-segmented {
+    gap: 0;
+}
+
 .button-group {
     display: flex;
     margin: 1.1rem 0 0.9rem;
