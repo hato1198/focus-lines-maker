@@ -847,29 +847,25 @@ legend {
 }
 
 .faq-answer {
-    margin: 0 1.5rem;
+    margin: 0 1.5rem 1.25rem 1.5rem;
     color: #333;
     line-height: 1.7;
     border-top: solid 1px var(--border-color);
+    padding-top: 0.7rem;
     display: grid;
-    grid-template-rows: 0fr; /* 閉じた状態では高さを0にする */
-    overflow: hidden;
-    transition: grid-template-rows 0.3s ease-out;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease;
 }
 
 .faq-item[open] .faq-answer {
-    /* 開いた時のスタイルを追加 */
-    grid-template-rows: 1fr; /* コンテンツに応じた高さにする */
-    border-top: solid 1px var(--border-color);
-    padding-top: 0.7rem;
-    margin-bottom: 1.25rem;
+    grid-template-rows: 1fr;
 }
 
 .faq-answer p {
     margin: 0;
     display: flex;
     align-items: baseline;
-    min-height: 0;
+    overflow: hidden;
 }
 
 .faq-answer a {
