@@ -866,6 +866,7 @@ legend {
     display: flex;
     align-items: baseline;
     overflow: hidden;
+    min-height: 0;
 }
 
 .faq-answer a {
