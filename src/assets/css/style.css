@@ -863,6 +863,7 @@ legend {
 .faq-answer a {
     color: var(--primary-color);
     text-decoration: none;
+    display: contents;
 }
 
 .faq-answer a:hover {
