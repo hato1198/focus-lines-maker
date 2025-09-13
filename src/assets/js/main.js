@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Colorisの初期化と設定
     Coloris({
-        alpha: true,
-        formatToggle: true
+        alpha: true
     });
     // ヘルプアイコンのクリック無効化
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
