@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import htmlMinifier from 'vite-plugin-html-minifier-terser';
-import Font from 'vite-plugin-font';
 
 export default defineConfig({
   root: 'src',
@@ -9,11 +8,7 @@ export default defineConfig({
   plugins: [
     htmlMinifier({
       removeComments: true,
-    }),
-    Font.vite({
-      scanFiles: ['src/**/*.{html,js,css}'],
-      fontDisplay: 'swap',
-    }),
+    })
   ],
   build: {
     outDir: '../dist',
