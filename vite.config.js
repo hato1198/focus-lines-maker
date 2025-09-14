@@ -12,6 +12,7 @@ export default defineConfig({
     }),
     Font.vite({
       scanFiles: ['src/**/*.{html,js,css}'],
+      fontDisplay: 'swap',
     }),
   ],
   build: {
