@@ -22,7 +22,7 @@
   "description": "",
   "devDependencies": {
     "vite": "^7.0.4",
-    "vite-plugin-font": "^5.1.2",
+    "vite-plugin-font": "^4.0.0",
     "vite-plugin-html-minifier-terser": "^3.8.0"
   }
 }
