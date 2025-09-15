@@ -485,7 +485,7 @@ legend {
 
 .controls input[type="range"] {
     appearance: none;
-    height: 8px;
+    height: 6px;
     border-radius: 9999px;
     background: var(--border-color);
     cursor: pointer;
