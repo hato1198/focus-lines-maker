@@ -352,7 +352,7 @@ footer nav a:hover {
 
 canvas {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 100%;
     display: block;
     background-color: #fff;
 }
@@ -946,9 +946,6 @@ select:hover {
     }
     #upload-prompt {
         font-size: 0.9rem;
-    }
-    canvas {
-        max-height: 80vh;
     }
     .controls {
         width: 100%;
