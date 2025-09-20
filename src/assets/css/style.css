@@ -317,7 +317,7 @@ footer nav a:hover {
 
 .controls {
     flex: 1;
-    min-width: 300px;
+    min-width: 270px;
     background-color: var(--container-bg-color);
     padding: 1.5rem;
     border-radius: 8px;
@@ -633,7 +633,7 @@ select:hover {
 /* 7.1. Features Section */
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1.5rem;
     text-align: center;
 }
@@ -691,7 +691,7 @@ select:hover {
 /* 7.2. Usage Section */
 .usage-steps {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
 }
 
@@ -759,13 +759,12 @@ select:hover {
 /* 7.4. Tips Section */
 .tips-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem;
 }
 
 .tips-grid .card .card-content {
     text-align: left;
-    padding: 1.25rem;
 }
 
 .tips-grid .card h3 {
@@ -910,7 +909,26 @@ select:hover {
 
 
 /* --- 9. RESPONSIVE --- */
-@media (max-width: 800px) {
+@media (max-width: 1025px) {
+    .features-grid {
+        gap: 0.8rem;
+    }
+    .feature-item {
+        padding: 1.5rem 1rem;
+    }
+}
+@media (max-width: 925px) {
+    .feature-item {
+        padding: 1.5rem 0.8rem;
+    }
+    .usage-steps, .tips-grid {
+        gap: 1rem;
+    }
+    .card-header h3 {
+        font-size: 1.1rem;
+    }
+}
+@media (max-width: 810px) {
     /* Base & Layout */
     header h1 {
         font-size: 1.8rem;
@@ -918,6 +936,7 @@ select:hover {
     .page-content {
         padding: 0 1rem;
         gap: 3rem;
+        max-width: 500px;
     }
     footer nav a {
         display: block;
@@ -931,15 +950,13 @@ select:hover {
     .card-header {
         padding: 1rem;
     }
-    .card-header h3 {
-        font-size: 1.1rem;
-    }
 
     /* Main App */
     .app-container {
         flex-direction: column;
-        padding: 1.5rem 1rem 2.5rem;
         gap: 1rem;
+        padding: 1.5rem 1rem 2.5rem;
+        max-width: 500px;
     }
     .workspace {
         height: auto;
@@ -968,11 +985,10 @@ select:hover {
     
     /* Landing Page Sections */
     .features-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 0.7rem;
     }
     .feature-item {
-        padding: 0.8rem;
+        padding: 1rem 0.8rem;
     }
     .feature-item h3 {
         font-size: 1rem;
@@ -997,6 +1013,9 @@ select:hover {
     }
     .introduction-text p {
         font-size: 0.9rem;
+    }
+    .tips-grid .card .card-content {
+        padding: 1rem;
     }
     .tips-grid .card h3 {
         font-size: 1.1rem;
