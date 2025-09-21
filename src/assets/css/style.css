@@ -128,14 +128,12 @@ footer p {
 
 footer nav a {
     color: #dee2e6;
-    text-decoration: none;
     margin: 0 0.75rem;
     white-space: nowrap;
 }
 
 footer nav a:hover {
     color: #ffffff;
-    text-decoration: underline;
 }
 
 /* 3.3. Subpage Layout */
