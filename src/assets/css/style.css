@@ -816,6 +816,13 @@ select:hover {
     box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
+.faq-question::before, .faq-answer p::before {
+    font-weight: 500;
+    color: var(--primary-color);
+    margin-right: 0.8rem;
+    font-size: 1.5rem;
+}
+
 .faq-question {
     display: block;
     padding: 1.5rem 2.5rem 1.5rem 1.5rem;
@@ -835,10 +842,6 @@ select:hover {
 
 .faq-question::before {
     content: 'Q';
-    font-weight: 500;
-    color: var(--primary-color);
-    margin-right: 0.8rem;
-    font-size: 1.5rem;
 }
 
 .faq-question::after {
@@ -874,10 +877,6 @@ select:hover {
 
 .faq-answer p::before {
     content: 'A';
-    font-weight: 500;
-    color: var(--primary-color);
-    margin-right: 0.8rem;
-    font-size: 1.5rem;
 }
 
 .faq-answer a {
