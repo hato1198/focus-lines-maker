@@ -74,8 +74,8 @@ YouTubeのサムネイル、SNS投稿、ブログのアイキャッチ画像な�
 
 ## 開発者
 
-**Hato**
-- Twitter: [hato;](https://twitter.com/hato_1198_ui)
+**HaTo**
+- Twitter: [HaTo](https://twitter.com/hato_1198_ui)
 
 
 ## ライセンス
