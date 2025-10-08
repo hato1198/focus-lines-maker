@@ -974,6 +974,7 @@ select:hover {
     }
     .workspace {
         height: auto;
+        min-width: 0;
     }
     #upload-prompt {
         font-size: 0.9rem;
@@ -982,6 +983,7 @@ select:hover {
         width: 100%;
         box-sizing: border-box;
         align-self: stretch;
+        min-width: 0;
     }
     .controls h2 {
         font-size: 1.3rem;
