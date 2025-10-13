@@ -56,8 +56,20 @@ document.addEventListener('DOMContentLoaded', () => {
     resetBtn.addEventListener('click', resetSettings);
     changeImageBtn.addEventListener('click', () => imageLoader.click());
 
-    [focusShapeSelect, lineTypeSelect, lineColorInput, lineCountInput, lineThicknessInput, randomnessInput].forEach(el => {
+    [focusShapeSelect, lineTypeSelect, lineCountInput, lineThicknessInput, randomnessInput].forEach(el => {
         el.addEventListener('input', () => requestAnimationFrame(drawScene));
+    });
+
+    let colorChangeThrottleTimer = false;
+    lineColorInput.addEventListener('input', () => {
+        if (colorChangeThrottleTimer) {
+            return;
+        }
+        colorChangeThrottleTimer = true;
+        setTimeout(() => {
+            requestAnimationFrame(drawScene);
+            colorChangeThrottleTimer = false;
+        }, 50);
     });
 
     focusArea.addEventListener('mousedown', handleInteractionStart);
