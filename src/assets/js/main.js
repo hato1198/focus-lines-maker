@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function loadImageFile(file) {
+    async function loadImageFile(file) {
         if (!file.type.startsWith('image/')) {
             alert('画像ファイルを選択してください。');
             return;
@@ -134,21 +134,22 @@ document.addEventListener('DOMContentLoaded', () => {
         originalFileName = file.name;
         originalFileType = file.type;
 
-        if (originalImage && originalImage.src.startsWith('blob:')) {
-            URL.revokeObjectURL(originalImage.src);
-        }
+        try {
+            const imageBitmap = await createImageBitmap(file);
+            originalImage = imageBitmap;
 
-        originalImage = new Image();
-        originalImage.onload = () => {
             setupCanvas();
             requestAnimationFrame(drawScene);
+
             uploadPrompt.classList.add('hidden');
             canvasContainer.classList.remove('hidden');
             downloadBtn.disabled = false;
             resetBtn.disabled = false;
             changeImageBtn.disabled = false;
-        };
-        originalImage.src = URL.createObjectURL(file);
+        } catch (e) {
+            console.error('Image loading failed:', e);
+            alert('画像の読み込みに失敗しました。');
+        }
     }
 
     function setupCanvas() {
@@ -393,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleInteractionStart(e) {
-        if (e.type === 'touchstart') e.preventDefault();
+        if (e.type === 'touchstart' && e.cancelable) e.preventDefault();
         e.stopPropagation();
         const coords = getClientCoords(e);
         focusState.dragStartX = coords.x;
@@ -413,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteractionMove(e) {
         if (!focusState.isDragging && !focusState.isResizing) return;
-        if (e.type === 'touchmove') e.preventDefault();
+        if (e.type === 'touchmove' && e.cancelable) e.preventDefault();
         const coords = getClientCoords(e);
         const dx = coords.x - focusState.dragStartX;
         const dy = coords.y - focusState.dragStartY;
