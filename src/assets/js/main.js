@@ -134,21 +134,21 @@ document.addEventListener('DOMContentLoaded', () => {
         originalFileName = file.name;
         originalFileType = file.type;
 
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            originalImage = new Image();
-            originalImage.onload = () => {
-                setupCanvas();
-                requestAnimationFrame(drawScene);
-                uploadPrompt.classList.add('hidden');
-                canvasContainer.classList.remove('hidden');
-                downloadBtn.disabled = false;
-                resetBtn.disabled = false;
-                changeImageBtn.disabled = false;
-            };
-            originalImage.src = event.target.result;
+        if (originalImage && originalImage.src.startsWith('blob:')) {
+            URL.revokeObjectURL(originalImage.src);
+        }
+
+        originalImage = new Image();
+        originalImage.onload = () => {
+            setupCanvas();
+            requestAnimationFrame(drawScene);
+            uploadPrompt.classList.add('hidden');
+            canvasContainer.classList.remove('hidden');
+            downloadBtn.disabled = false;
+            resetBtn.disabled = false;
+            changeImageBtn.disabled = false;
         };
-        reader.readAsDataURL(file);
+        originalImage.src = URL.createObjectURL(file);
     }
 
     function setupCanvas() {
