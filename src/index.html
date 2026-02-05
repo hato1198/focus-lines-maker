@@ -78,7 +78,7 @@
                 <h2 id="workspace-heading" class="sr-only">画像ワークスペース</h2>
                 <div id="upload-prompt">
                     <p>ここに画像をドラッグ＆ドロップ<br>または</p>
-                    <label for="image-loader" class="button button-inline">画像を選択</label>
+                    <button type="button" id="select-image-btn" class="button button-inline">画像を選択</button>
                     <input type="file" id="image-loader" name="image-loader" accept="image/*" hidden>
                     <!--
                     <p class="terms-notice">
@@ -137,10 +137,10 @@
                     <input type="text" id="line-color" value="#000000" data-coloris>
 
                     <label for="line-count">本数</label>
-                    <input type="range" id="line-count" min="0" max="525" value="210" step="5">
+                    <input type="range" id="line-count" min="0" max="525" value="210" step="15">
 
                     <label for="line-thickness">太さ</label>
-                    <input type="range" id="line-thickness" min="0" max="150" value="60" step="3">
+                    <input type="range" id="line-thickness" min="0" max="150" value="60" step="5">
 
                     <label for="randomness">ランダム性</label>
                     <input type="range" id="randomness" min="0" max="1" value="0.5" step="0.05">

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- DOM要素の取得 ---
+    const selectImageBtn = document.getElementById('select-image-btn');
     const imageLoader = document.getElementById('image-loader');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -51,6 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- イベントリスナーの設定 ---
+    if (selectImageBtn) {
+        selectImageBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            imageLoader.click();
+        });
+    }
     imageLoader.addEventListener('change', handleImageUpload);
     downloadBtn.addEventListener('click', downloadImage);
     resetBtn.addEventListener('click', resetSettings);

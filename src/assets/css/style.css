@@ -200,12 +200,20 @@ footer nav a:hover {
     background-color: #5a6268;
 }
 
+.button:active:not(:disabled) {
+    background-color: #4b5258;
+}
+
 .button.primary {
     background-color: var(--primary-color);
 }
 
 .button.primary:hover:not(:disabled) {
     background-color: var(--primary-hover-color);
+}
+
+.button.primary:active:not(:disabled) {
+    background-color: #00408f;
 }
 
 .button:disabled {
