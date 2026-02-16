@@ -52,8 +52,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let focusState = {
         isDragging: false, isResizing: false,
         dragStartX: 0, dragStartY: 0,
-        resizeDirection: null
+        resizeDirection: null,
+        parentWidth: 0, parentHeight: 0,
+        areaWidth: 0, areaHeight: 0
     };
+    let moveRafId = null;
+
+    // --- Worker 描画スロットリング ---
+    let workerBusy = false;
+    let drawPending = false;
+    worker.addEventListener('message', (e) => {
+        if (e.data.type === 'drawDone') {
+            workerBusy = false;
+            if (drawPending) {
+                drawPending = false;
+                postDrawMessage();
+            }
+        }
+    });
 
     // --- イベントリスナーの設定 ---
     if (selectImageBtn) {
@@ -71,17 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('input', () => postDrawMessage());
     });
 
-    let colorChangeThrottleTimer = false;
-    lineColorInput.addEventListener('input', () => {
-        if (colorChangeThrottleTimer) {
-            return;
-        }
-        colorChangeThrottleTimer = true;
-        setTimeout(() => {
-            postDrawMessage();
-            colorChangeThrottleTimer = false;
-        }, 50);
-    });
+    lineColorInput.addEventListener('input', () => postDrawMessage());
 
     focusArea.addEventListener('mousedown', handleInteractionStart);
     document.addEventListener('mousemove', handleInteractionMove);
@@ -201,13 +207,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function postDrawMessage() {
         if (!originalImage) return;
 
+        if (workerBusy) {
+            drawPending = true;
+            return;
+        }
+
+        workerBusy = true;
+
         const w = originalImage.width;
         const h = originalImage.height;
+        const cw = canvasContainer.clientWidth;
+        const ch = canvasContainer.clientHeight;
         const focusRect = {
-            x: focusArea.offsetLeft / canvasContainer.clientWidth * w,
-            y: focusArea.offsetTop / canvasContainer.clientHeight * h,
-            width: focusArea.offsetWidth / canvasContainer.clientWidth * w,
-            height: focusArea.offsetHeight / canvasContainer.clientHeight * h,
+            x: focusArea.offsetLeft / cw * w,
+            y: focusArea.offsetTop / ch * h,
+            width: focusArea.offsetWidth / cw * w,
+            height: focusArea.offsetHeight / ch * h,
         };
 
         worker.postMessage({
@@ -309,6 +324,10 @@ document.addEventListener('DOMContentLoaded', () => {
         focusState.startTop = focusArea.offsetTop;
         focusState.startWidth = focusArea.offsetWidth;
         focusState.startHeight = focusArea.offsetHeight;
+        focusState.parentWidth = canvasContainer.clientWidth;
+        focusState.parentHeight = canvasContainer.clientHeight;
+        focusState.areaWidth = focusState.startWidth;
+        focusState.areaHeight = focusState.startHeight;
         if (e.target.classList.contains('resize-handle')) {
             focusState.isResizing = true;
             focusState.resizeDirection = e.target.dataset.direction;
@@ -322,18 +341,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!focusState.isDragging && !focusState.isResizing) return;
         if (e.type === 'touchmove' && e.cancelable) e.preventDefault();
         const coords = getClientCoords(e);
+        focusState.lastMoveCoords = coords;
+        focusState.lastMoveShiftKey = e.shiftKey;
+
+        if (moveRafId) return;
+        moveRafId = requestAnimationFrame(() => {
+            moveRafId = null;
+            applyInteractionMove();
+        });
+    }
+
+    function applyInteractionMove() {
+        const coords = focusState.lastMoveCoords;
+        if (!coords) return;
         const dx = coords.x - focusState.dragStartX;
         const dy = coords.y - focusState.dragStartY;
-        const parentWidth = canvasContainer.clientWidth;
-        const parentHeight = canvasContainer.clientHeight;
+        const parentWidth = focusState.parentWidth;
+        const parentHeight = focusState.parentHeight;
 
         if (focusState.isDragging) {
             let newLeft = focusState.startLeft + dx;
             let newTop = focusState.startTop + dy;
-            newLeft = Math.max(0, Math.min(newLeft, parentWidth - focusArea.offsetWidth));
-            newTop = Math.max(0, Math.min(newTop, parentHeight - focusArea.offsetHeight));
+            newLeft = Math.max(0, Math.min(newLeft, parentWidth - focusState.areaWidth));
+            newTop = Math.max(0, Math.min(newTop, parentHeight - focusState.areaHeight));
             focusArea.style.left = `${newLeft}px`;
             focusArea.style.top = `${newTop}px`;
+            checkCentering(newLeft, newTop, focusState.areaWidth, focusState.areaHeight, parentWidth, parentHeight);
         } else if (focusState.isResizing) {
             let cursorStyle = 'default';
             switch (focusState.resizeDirection) {
@@ -363,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 newTop = focusState.startTop + dy;
             }
 
-            if (e.shiftKey && focusState.startHeight > 0) {
+            if (focusState.lastMoveShiftKey && focusState.startHeight > 0) {
                 const originalAspectRatio = focusState.startWidth / focusState.startHeight;
                 const newAspectRatio = Math.abs(newWidth) / Math.abs(newHeight);
                 if (newAspectRatio > originalAspectRatio) {
@@ -397,21 +430,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (newWidth > 20) {
                 focusArea.style.left = `${newLeft}px`;
                 focusArea.style.width = `${newWidth}px`;
+                focusState.areaWidth = newWidth;
             }
             if (newHeight > 20) {
                 focusArea.style.top = `${newTop}px`;
                 focusArea.style.height = `${newHeight}px`;
+                focusState.areaHeight = newHeight;
             }
+            checkCentering(newLeft, newTop, focusState.areaWidth, focusState.areaHeight, parentWidth, parentHeight);
         }
-        checkCentering();
     }
 
     function handleInteractionEnd() {
         if (focusState.isDragging || focusState.isResizing) {
+            if (moveRafId) {
+                cancelAnimationFrame(moveRafId);
+                moveRafId = null;
+                applyInteractionMove();
+            }
             postDrawMessage();
         }
         focusState.isDragging = false;
         focusState.isResizing = false;
+        focusState.lastMoveCoords = null;
         document.body.style.cursor = '';
         focusArea.style.cursor = '';
         focusArea.classList.remove('centered');
@@ -419,14 +460,14 @@ document.addEventListener('DOMContentLoaded', () => {
         guideV.style.display = 'none';
     }
 
-    function checkCentering() {
-        const parentRect = canvasContainer.getBoundingClientRect();
-        const areaRect = focusArea.getBoundingClientRect();
-        const areaCenter = { x: focusArea.offsetLeft + areaRect.width / 2, y: focusArea.offsetTop + areaRect.height / 2 };
-        const parentCenter = { x: parentRect.width / 2, y: parentRect.height / 2 };
+    function checkCentering(areaLeft, areaTop, areaWidth, areaHeight, parentWidth, parentHeight) {
+        const areaCenterX = areaLeft + areaWidth / 2;
+        const areaCenterY = areaTop + areaHeight / 2;
+        const parentCenterX = parentWidth / 2;
+        const parentCenterY = parentHeight / 2;
         const snapThreshold = 5;
-        const isHorizontallyCentered = Math.abs(parentCenter.x - areaCenter.x) < snapThreshold;
-        const isVerticallyCentered = Math.abs(parentCenter.y - areaCenter.y) < snapThreshold;
+        const isHorizontallyCentered = Math.abs(parentCenterX - areaCenterX) < snapThreshold;
+        const isVerticallyCentered = Math.abs(parentCenterY - areaCenterY) < snapThreshold;
 
         if (focusState.isResizing) {
             guideV.style.display = 'none';
@@ -437,12 +478,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (isHorizontallyCentered) {
-            guideV.style.left = `${parentCenter.x}px`;
-            if (focusState.isDragging) focusArea.style.left = `${parentCenter.x - areaRect.width / 2}px`;
+            guideV.style.left = `${parentCenterX}px`;
+            if (focusState.isDragging) focusArea.style.left = `${parentCenterX - areaWidth / 2}px`;
         }
         if (isVerticallyCentered) {
-            guideH.style.top = `${parentCenter.y}px`;
-            if (focusState.isDragging) focusArea.style.top = `${parentCenter.y - areaRect.height / 2}px`;
+            guideH.style.top = `${parentCenterY}px`;
+            if (focusState.isDragging) focusArea.style.top = `${parentCenterY - areaHeight / 2}px`;
         }
     }
 

@@ -25,6 +25,7 @@ self.addEventListener('message', async (e) => {
 
         case 'draw':
             draw(e.data.params);
+            self.postMessage({ type: 'drawDone' });
             break;
 
         case 'download': {
