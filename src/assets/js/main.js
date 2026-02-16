@@ -165,14 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const bitmapForWorker = await createImageBitmap(file);
             worker.postMessage({ type: 'setImage', image: bitmapForWorker }, [bitmapForWorker]);
 
-            setupCanvas();
-            postDrawMessage();
-
             uploadPrompt.classList.add('hidden');
             canvasContainer.classList.remove('hidden');
             downloadBtn.disabled = false;
             resetBtn.disabled = false;
             changeImageBtn.disabled = false;
+
+            setupCanvas();
+            postDrawMessage();
         } catch (e) {
             console.error('Image loading failed:', e);
             alert('画像の読み込みに失敗しました。');
