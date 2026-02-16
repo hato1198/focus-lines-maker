@@ -10,11 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Web Worker の初期化 ---
+    const worker = new Worker(new URL('./focus-lines-worker.js', import.meta.url), { type: 'module' });
+
     // --- DOM要素の取得 ---
     const selectImageBtn = document.getElementById('select-image-btn');
     const imageLoader = document.getElementById('image-loader');
     const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
+    const offscreen = canvas.transferControlToOffscreen();
+    worker.postMessage({ type: 'init', canvas: offscreen }, [offscreen]);
     const uploadPrompt = document.getElementById('upload-prompt');
     const canvasContainer = document.getElementById('canvas-container');
     const workspace = document.querySelector('.workspace');
@@ -64,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
     changeImageBtn.addEventListener('click', () => imageLoader.click());
 
     [focusShapeSelect, lineTypeSelect, lineCountInput, lineThicknessInput, randomnessInput].forEach(el => {
-        el.addEventListener('input', () => requestAnimationFrame(drawScene));
+        el.addEventListener('input', () => postDrawMessage());
     });
 
     let colorChangeThrottleTimer = false;
@@ -74,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         colorChangeThrottleTimer = true;
         setTimeout(() => {
-            requestAnimationFrame(drawScene);
+            postDrawMessage();
             colorChangeThrottleTimer = false;
         }, 50);
     });
@@ -90,9 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
     workspace.addEventListener('dragover', handleDragOver, false);
     workspace.addEventListener('dragleave', handleDragLeave, false);
     workspace.addEventListener('drop', handleDrop, false);
-    
+
     let resizeTimer;
-    let lastWindowWidth = window.innerWidth; 
+    let lastWindowWidth = window.innerWidth;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
@@ -101,12 +105,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 lastWindowWidth = currentWindowWidth;
                 if (originalImage) {
                     setupCanvas();
-                    drawScene();
+                    postDrawMessage();
                 }
             }
         }, 250);
     });
-    
+
     // --- 主要な関数 ---
     function handleDragEnter(e) {
         e.preventDefault();
@@ -157,8 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageBitmap = await createImageBitmap(file);
             originalImage = imageBitmap;
 
+            // Worker に画像を転送 (コピーを作成して転送)
+            const bitmapForWorker = await createImageBitmap(file);
+            worker.postMessage({ type: 'setImage', image: bitmapForWorker }, [bitmapForWorker]);
+
             setupCanvas();
-            requestAnimationFrame(drawScene);
+            postDrawMessage();
 
             uploadPrompt.classList.add('hidden');
             canvasContainer.classList.remove('hidden');
@@ -176,12 +184,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const maxW = workspace.clientWidth - 20;
         const maxH = workspace.clientHeight - 20;
         const scale = Math.min(maxW / originalImage.width, maxH / originalImage.height, 2);
-        canvas.width = originalImage.width;
-        canvas.height = originalImage.height;
-        const displayWidth = canvas.width * scale;
-        const displayHeight = canvas.height * scale;
+        const canvasWidth = originalImage.width;
+        const canvasHeight = originalImage.height;
+        const displayWidth = canvasWidth * scale;
+        const displayHeight = canvasHeight * scale;
         canvas.style.width = `${displayWidth}px`;
         canvas.style.height = `${displayHeight}px`;
+        worker.postMessage({ type: 'resize', width: canvasWidth, height: canvasHeight });
         focusArea.style.top = '15%';
         focusArea.style.left = '15%';
         focusArea.style.width = '70%';
@@ -189,121 +198,28 @@ document.addEventListener('DOMContentLoaded', () => {
         focusArea.classList.toggle('circle', focusShapeSelect.value === 'circle');
     }
 
-    function drawScene() {
+    function postDrawMessage() {
         if (!originalImage) return;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
-        drawFocusLines();
-    }
-
-    function drawFocusLines() {
-        const w = canvas.width;
-        const h = canvas.height;
+        const w = originalImage.width;
+        const h = originalImage.height;
         const focusRect = {
             x: focusArea.offsetLeft / canvasContainer.clientWidth * w,
             y: focusArea.offsetTop / canvasContainer.clientHeight * h,
             width: focusArea.offsetWidth / canvasContainer.clientWidth * w,
             height: focusArea.offsetHeight / canvasContainer.clientHeight * h,
         };
-        const focusCenter = {
-            x: focusRect.x + focusRect.width / 2,
-            y: focusRect.y + focusRect.height / 2,
-        };
-        
-        const lineCount = parseInt(lineCountInput.value);
-        let lineThickness = parseFloat(lineThicknessInput.value);
-        
-        const referenceSize = (1920 + 1080) / 2;
-        const imageAverageSize = (w + h) / 2;
-        const sizeCorrectionFactor = imageAverageSize / referenceSize;
-        lineThickness *= sizeCorrectionFactor;
 
-        const isCircle = focusShapeSelect.value === 'circle';
-        const lineType = lineTypeSelect.value;
-        const randomAmount = parseFloat(randomnessInput.value);
-
-        ctx.fillStyle = lineColorInput.value;
-        ctx.strokeStyle = lineColorInput.value;
-        ctx.lineWidth = Math.max(1, lineThickness * 0.08);
-
-        const drawLoop = (callback) => {
-            if (lineType === 'manga') {
-                let i = 0;
-                while (i < lineCount) {
-                    const baseGapSize = 5;
-                    const gapVariation = (Math.random() - 0.5) * baseGapSize * 2 * randomAmount;
-                    const gapSize = Math.round(Math.max(1, baseGapSize + gapVariation));
-                    i += gapSize;
-
-                    if (i >= lineCount) break;
-
-                    const baseGroupSize = 5;
-                    const groupVariation = (Math.random() - 0.5) * baseGroupSize * 2 * randomAmount;
-                    const groupSize = Math.round(Math.max(1, baseGroupSize + groupVariation));
-                    
-                    for (let j = 0; j < groupSize && i < lineCount; j++, i++) {
-                        callback(i, lineCount, randomAmount);
-                    }
-                }
-            } else {
-                for (let i = 0; i < lineCount; i++) {
-                    callback(i, lineCount, randomAmount);
-                }
-            }
-        };
-
-        drawLoop((i, count, random) => {
-            let angleOffset = 0;
-            if (random > 0) {
-                angleOffset = (Math.random() - 0.5) * random;
-            }
-            const angle = ((i + angleOffset) / count) * 2 * Math.PI;
-
-            const buffer = Math.max(w, h);
-            const outerBounds = {x: -buffer, y: -buffer, width: w + buffer*2, height: h + buffer*2};
-            const outerPoint = getIntersectionWithRect(focusCenter, angle, outerBounds);
-            if (!outerPoint) return;
-
-            let innerPoint = isCircle ? getIntersectionWithEllipse(focusCenter, angle, focusRect) : getIntersectionWithRect(focusCenter, angle, focusRect);
-            if (!innerPoint) return;
-            
-            if (random > 0) {
-                const dx = innerPoint.x - focusCenter.x;
-                const dy = innerPoint.y - focusCenter.y;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                if (dist > 0) {
-                    const randomScale = 1 + (random / 2) * (Math.random() * 2 - 1);
-                    const newDist = dist * randomScale;
-                    innerPoint.x = focusCenter.x + (dx / dist) * newDist;
-                    innerPoint.y = focusCenter.y + (dy / dist) * newDist;
-                }
-            }
-            
-            if (lineType === 'halo') {
-                ctx.beginPath();
-                ctx.moveTo(innerPoint.x, innerPoint.y);
-                ctx.lineTo(outerPoint.x, outerPoint.y);
-                ctx.stroke();
-            } else {
-                const distance = Math.sqrt(Math.pow(outerPoint.x - innerPoint.x, 2) + Math.pow(outerPoint.y - innerPoint.y, 2));
-                let baseWidth = (distance / imageAverageSize) * lineThickness;
-
-                if (random > 0) {
-                    baseWidth *= 1 + random * (Math.random() * 2 - 1);
-                    baseWidth = Math.max(0, baseWidth);
-                }
-
-                const perpAngle = angle + Math.PI / 2;
-                const dx = Math.cos(perpAngle) * baseWidth / 2;
-                const dy = Math.sin(perpAngle) * baseWidth / 2;
-                
-                ctx.beginPath();
-                ctx.moveTo(innerPoint.x, innerPoint.y);
-                ctx.lineTo(outerPoint.x + dx, outerPoint.y + dy);
-                ctx.lineTo(outerPoint.x - dx, outerPoint.y - dy);
-                ctx.closePath();
-                ctx.fill();
+        worker.postMessage({
+            type: 'draw',
+            params: {
+                focusRect,
+                lineCount: parseInt(lineCountInput.value),
+                lineThickness: parseFloat(lineThicknessInput.value),
+                lineColor: lineColorInput.value,
+                lineType: lineTypeSelect.value,
+                randomAmount: parseFloat(randomnessInput.value),
+                isCircle: focusShapeSelect.value === 'circle',
             }
         });
     }
@@ -327,41 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         focusArea.style.height = '70%';
         focusArea.classList.toggle('circle', defaultSettings.focusShape === 'circle');
 
-        requestAnimationFrame(drawScene);
-    }
-    
-    // --- ヘルパー関数群 ---
-    function getIntersectionWithRect(origin, angle, rect) {
-        const cos = Math.cos(angle), sin = Math.sin(angle);
-        const dist = Math.max(rect.width, rect.height) * 2;
-        const ray = { x1: origin.x, y1: origin.y, x2: origin.x + cos * dist, y2: origin.y + sin * dist };
-        const lines = [ { x1: rect.x, y1: rect.y, x2: rect.x + rect.width, y2: rect.y }, { x1: rect.x + rect.width, y1: rect.y, x2: rect.x + rect.width, y2: rect.y + rect.height }, { x1: rect.x, y1: rect.y + rect.height, x2: rect.x + rect.width, y2: rect.y + rect.height }, { x1: rect.x, y1: rect.y, x2: rect.x, y2: rect.y + rect.height }];
-        let closestIntersect = null, minDistSq = Infinity;
-        for (const line of lines) {
-            const den = (ray.x1 - ray.x2) * (line.y1 - line.y2) - (ray.y1 - ray.y2) * (line.x1 - line.x2);
-            if (den === 0) continue;
-            const t = ((ray.x1 - line.x1) * (line.y1 - line.y2) - (ray.y1 - line.y1) * (line.x1 - line.x2)) / den;
-            const u = -((ray.x1 - ray.x2) * (ray.y1 - line.y1) - (ray.y1 - ray.y2) * (ray.x1 - line.x1)) / den;
-            if (t > 0 && t < 1 && u > 0 && u < 1) {
-                const pt = { x: ray.x1 + t * (ray.x2 - ray.x1), y: ray.y1 + t * (ray.y2 - ray.y1) };
-                const dSq = Math.pow(pt.x - origin.x, 2) + Math.pow(pt.y - origin.y, 2);
-                if (dSq < minDistSq) { minDistSq = dSq; closestIntersect = pt; }
-            }
-        }
-        return closestIntersect;
-    }
-    function getIntersectionWithEllipse(origin, angle, rect) {
-        const center = { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
-        const rx = rect.width / 2, ry = rect.height / 2;
-        if(rx <= 0 || ry <= 0) return null;
-        const cos = Math.cos(angle), sin = Math.sin(angle);
-        const A = (cos * cos) / (rx * rx) + (sin * sin) / (ry * ry);
-        const B = 2 * ((origin.x - center.x) * cos / (rx * rx) + (origin.y - center.y) * sin / (ry * ry));
-        const C = ((origin.x - center.x)**2) / (rx * rx) + ((origin.y - center.y)**2) / (ry * ry) - 1;
-        const discriminant = B * B - 4 * A * C;
-        if (discriminant < 0) return null;
-        const t = (-B + Math.sqrt(discriminant)) / (2 * A);
-        return { x: origin.x + t * cos, y: origin.y + t * sin };
+        postDrawMessage();
     }
 
     function downloadImage() {
@@ -373,37 +255,42 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileExtension = isJpeg ? 'jpg' : 'png';
         const mimeType = isJpeg ? 'image/jpeg' : 'image/png';
 
-        setTimeout(() => {
-            canvas.toBlob(blob => {
-                if (!blob) {
-                    console.error('CanvasからBlobの生成に失敗しました。');
-                    alert('画像の保存に失敗しました。');
-                    downloadBtn.textContent = originalText;
-                    downloadBtn.disabled = false;
-                    return;
-                }
+        const handleDownload = (e) => {
+            if (e.data.type !== 'downloadReady') return;
+            worker.removeEventListener('message', handleDownload);
 
-                try {
-                    const baseName = originalFileName.includes('.')
-                        ? originalFileName.substring(0, originalFileName.lastIndexOf('.'))
-                        : originalFileName;
-                    
-                    const newFileName = `${baseName}-focus.${fileExtension}`;
-                    const link = document.createElement('a');
-                    link.download = newFileName;
-                    const url = URL.createObjectURL(blob);
-                    link.href = url;
-                    link.click();
-                    URL.revokeObjectURL(url);
-                } catch (e) {
-                    console.error('画像のダウンロードに失敗しました。', e);
-                    alert('画像の保存に失敗しました。');
-                } finally {
-                    downloadBtn.textContent = originalText;
-                    downloadBtn.disabled = false;
-                }
-            }, mimeType);
-        }, 0);
+            const blob = e.data.blob;
+            if (!blob) {
+                console.error('WorkerからBlobの生成に失敗しました。');
+                alert('画像の保存に失敗しました。');
+                downloadBtn.textContent = originalText;
+                downloadBtn.disabled = false;
+                return;
+            }
+
+            try {
+                const baseName = originalFileName.includes('.')
+                    ? originalFileName.substring(0, originalFileName.lastIndexOf('.'))
+                    : originalFileName;
+
+                const newFileName = `${baseName}-focus.${fileExtension}`;
+                const link = document.createElement('a');
+                link.download = newFileName;
+                const url = URL.createObjectURL(blob);
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            } catch (e) {
+                console.error('画像のダウンロードに失敗しました。', e);
+                alert('画像の保存に失敗しました。');
+            } finally {
+                downloadBtn.textContent = originalText;
+                downloadBtn.disabled = false;
+            }
+        };
+
+        worker.addEventListener('message', handleDownload);
+        worker.postMessage({ type: 'download', mimeType });
     }
 
     // --- フォーカスエリアの操作ロジック ---
@@ -507,11 +394,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 newHeight = parentHeight - newTop;
             }
 
-            if(newWidth > 20) {
+            if (newWidth > 20) {
                 focusArea.style.left = `${newLeft}px`;
                 focusArea.style.width = `${newWidth}px`;
             }
-            if(newHeight > 20) {
+            if (newHeight > 20) {
                 focusArea.style.top = `${newTop}px`;
                 focusArea.style.height = `${newHeight}px`;
             }
@@ -521,11 +408,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleInteractionEnd() {
         if (focusState.isDragging || focusState.isResizing) {
-            requestAnimationFrame(drawScene);
+            postDrawMessage();
         }
         focusState.isDragging = false;
         focusState.isResizing = false;
-        document.body.style.cursor = ''; 
+        document.body.style.cursor = '';
         focusArea.style.cursor = '';
         focusArea.classList.remove('centered');
         guideH.style.display = 'none';
@@ -558,8 +445,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (focusState.isDragging) focusArea.style.top = `${parentCenter.y - areaRect.height / 2}px`;
         }
     }
-    
+
     focusShapeSelect.addEventListener('change', (e) => {
-       focusArea.classList.toggle('circle', e.target.value === 'circle');
+        focusArea.classList.toggle('circle', e.target.value === 'circle');
     });
 });

@@ -1,4 +1,5 @@
 node_modules/
+dist/
 run.bat
 src/assets/css/style-neu.css
 src/assets/js/range-style-neu.js
