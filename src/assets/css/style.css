@@ -1220,6 +1220,10 @@ select:hover {
     }
 
     /* Subpages */
+    .faq-container {
+        padding-bottom: 3rem;
+    }
+    
     .faq-question::before,
     .faq-answer p::before {
         margin-right: 0.5rem;
@@ -1247,7 +1251,7 @@ select:hover {
     }
 
     .page-container {
-        margin: 1rem;
+        margin: 1rem 1rem 3rem;
         padding: 1.5rem;
     }
 
