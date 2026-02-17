@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <!-- 文字コード・レスポンシブ対応 -->
     <meta charset="UTF-8">
@@ -41,7 +42,7 @@
     <meta property="og:url" content="https://focus-lines-maker.vercel.app/contact.html" />
     <meta property="og:image" content="https://focus-lines-maker.vercel.app/ogp.png" />
     <meta property="og:site_name" content="集中線メーカー" />
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content="ご意見・ご要望 | 集中線メーカー" />
@@ -49,7 +50,7 @@
     <meta name="twitter:site" content="@hato1198" />
     <meta name="twitter:creator" content="@hato1198" />
     <meta property="twitter:image" content="https://focus-lines-maker.vercel.app/ogp.png" />
-    
+
     <!-- Vercel Web Analytics -->
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -62,9 +63,14 @@
     </script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
+
 <body>
     <header>
-        <h1><a href="/">集中線メーカー</a></h1>
+        <div class="header-left">
+            <h1><a href="/">集中線メーカー</a></h1>
+            <span class="header-separator"></span>
+            <p class="site-description">画像に集中線を追加できる無料ツール</p>
+        </div>
     </header>
 
     <div class="page-title-container">
@@ -73,21 +79,25 @@
 
     <main class="page-wrapper">
         <div class="page-container form-container">
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSex78ESrUwybjs4uV-F4sGwC3hIF-ZoHpI4qKNyjkStOf5HXA/viewform?embedded=true" width="800" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSex78ESrUwybjs4uV-F4sGwC3hIF-ZoHpI4qKNyjkStOf5HXA/viewform?embedded=true"
+                    width="800" height="800" frameborder="0" marginheight="0" marginwidth="0">読み込んでいます…</iframe>
         </div>
     </main>
 
     <footer>
-        <p>© <span id="year">2025</span> Hato. All rights reserved.</p>
-        <nav>
-            <a href="/">トップページ</a>
-            <a href="/faq.html">よくある質問</a>
-            <a href="/terms.html">利用規約</a>
-            <a href="/privacy.html">プライバシーポリシー</a>
-            <a href="/contact.html">ご意見・ご要望</a>
-        </nav>
+        <div class="footer-content">
+            <p class="copyright">© <span id="year">2025</span> Hato. All rights reserved.</p>
+            <nav>
+                <a href="/">トップページ</a>
+                <a href="/faq.html">よくある質問</a>
+                <a href="/terms.html">利用規約</a>
+                <a href="/privacy.html">プライバシーポリシー</a>
+                <a href="/contact.html">ご意見・ご要望</a>
+            </nav>
+        </div>
     </footer>
 
     <script type="module" src="./assets/js/common.js"></script>
 </body>
+
 </html>

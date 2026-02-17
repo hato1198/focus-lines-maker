@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <!-- 文字コード・レスポンシブ対応 -->
     <meta charset="UTF-8">
@@ -33,7 +34,7 @@
     <noscript>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css">
     </noscript>
-    
+
     <!-- ページタイトル -->
     <title>集中線メーカー | 画像に集中線を追加できる無料ツール</title>
 
@@ -48,7 +49,7 @@
     <meta property="og:url" content="https://focus-lines-maker.vercel.app/" />
     <meta property="og:image" content="https://focus-lines-maker.vercel.app/ogp.png" />
     <meta property="og:site_name" content="集中線メーカー" />
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta property="twitter:title" content="集中線メーカー" />
@@ -56,7 +57,7 @@
     <meta name="twitter:site" content="@hato1198" />
     <meta name="twitter:creator" content="@hato1198" />
     <meta property="twitter:image" content="https://focus-lines-maker.vercel.app/ogp.png" />
-    
+
     <!-- Vercel Web Analytics -->
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -72,10 +73,20 @@
     <!-- Google Search Console -->
     <meta name="google-site-verification" content="1Glep4Ak539vrqnj91oNFGEe5vhHyHs_18wBh6rXBrc" />
 </head>
+
 <body>
     <header>
-        <h1><a href="/">集中線メーカー</a></h1>
-        <p>画像に集中線を追加できる無料ツールです。</p>
+        <div class="header-left">
+            <h1><a href="/">集中線メーカー</a></h1>
+            <span class="header-separator"></span>
+            <p class="site-description">画像に集中線を追加できる無料ツール</p>
+        </div>
+        <nav class="header-nav">
+            <a href="#features">特徴</a>
+            <a href="#usage">使い方</a>
+            <a href="#introduction">集中線とは</a>
+            <a href="#tips">設定のコツ</a>
+        </nav>
     </header>
 
     <div class="app-background">
@@ -163,103 +174,112 @@
     </div>
 
     <div class="page-content">
-        <section id="features" aria-labelledby="features-title">
-            <h2 id="features-title" class="section-title">集中線メーカーの特徴</h2>
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <img src="./assets/images/icon-free.svg" alt="無料アイコン">
+        <section id="features" class="section-full" aria-labelledby="features-title">
+            <div class="container-inner">
+                <h2 id="features-title" class="section-title">集中線メーカーの特徴</h2>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="./assets/images/icon-free.svg" alt="無料アイコン">
                         </div>
                         <h3>無料・広告なし</h3>
                         <p>すべての機能を無料でご利用いただけます。煩わしい広告は一切ありません。</p>
                     </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <img src="./assets/images/icon-customize.svg" alt="簡単カスタマイズアイコン">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="./assets/images/icon-customize.svg" alt="簡単カスタマイズアイコン">
+                        </div>
+                        <h3>簡単カスタマイズ</h3>
+                        <p>集中線の色、太さ、本数、基準位置などを直感的に調整できます。</p>
                     </div>
-                    <h3>簡単カスタマイズ</h3>
-                    <p>集中線の色、太さ、本数、基準位置などを直感的に調整できます。</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <img src="./assets/images/icon-privacy.svg" alt="プライバシー保護アイコン">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="./assets/images/icon-privacy.svg" alt="プライバシー保護アイコン">
+                        </div>
+                        <h3>プライバシー保護</h3>
+                        <p>ブラウザ内で動作します。画像がサーバーに送信されることはありません。</p>
                     </div>
-                    <h3>プライバシー保護</h3>
-                    <p>ブラウザ内で動作します。画像がサーバーに送信されることはありません。</p>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <img src="./assets/images/icon-business.svg" alt="商用利用アイコン">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <img src="./assets/images/icon-business.svg" alt="商用利用アイコン">
+                        </div>
+                        <h3>商用利用OK</h3>
+                        <p>作成した画像は、個人利用・商用利用を問わず自由にご利用いただけます。</p>
                     </div>
-                    <h3>商用利用OK</h3>
-                    <p>作成した画像は、個人利用・商用利用を問わず自由にご利用いただけます。</p>
                 </div>
             </div>
         </section>
 
-        <section id="usage" aria-labelledby="usage-title">
-            <h2 id="usage-title" class="section-title">使い方</h2>
-            <div class="usage-steps">
-                <div class="card">
-                    <div class="card-header">
-                        <span class="step-number">1</span>
-                        <h3>画像をアップロード</h3>
+        <section id="usage" class="section-full bg-gray" aria-labelledby="usage-title">
+            <div class="container-inner">
+                <h2 id="usage-title" class="section-title">使い方</h2>
+                <div class="usage-steps">
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="step-number">1</span>
+                            <h3>画像をアップロード</h3>
+                        </div>
+                        <img src="./assets/images/usage-1.webp" alt="画像をアップロードする手順のイラスト" class="card-image" loading="lazy">
+                        <p>「画像を選択」ボタンまたはドラッグ＆ドロップで、加工したい画像をアップロードします。</p>
                     </div>
-                    <img src="./assets/images/usage-1.webp" alt="画像をアップロードする手順のイラスト" class="card-image" loading="lazy">
-                    <p>「画像を選択」ボタンまたはドラッグ＆ドロップで、加工したい画像をアップロードします。</p>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="step-number">2</span>
-                        <h3>範囲と設定を調整</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="step-number">2</span>
+                            <h3>範囲と設定を調整</h3>
+                        </div>
+                        <img src="./assets/images/usage-2.webp" alt="集中線の範囲や設定を調整する手順のイラスト" class="card-image" loading="lazy">
+                        <p>青い枠をドラッグ＆リサイズして基準とする範囲を決め、設定パネルで線の色や太さを調整します。</p>
                     </div>
-                    <img src="./assets/images/usage-2.webp" alt="集中線の範囲や設定を調整する手順のイラスト" class="card-image" loading="lazy">
-                    <p>青い枠をドラッグ＆リサイズして基準とする範囲を決め、設定パネルで線の色や太さを調整します。</p>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <span class="step-number">3</span>
-                        <h3>画像をダウンロード</h3>
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="step-number">3</span>
+                            <h3>画像をダウンロード</h3>
+                        </div>
+                        <img src="./assets/images/usage-3.webp" alt="画像をダウンロードする手順のイラスト" class="card-image" loading="lazy">
+                        <p>「画像をダウンロード」ボタンを押すと、集中線が追加された画像が保存されます。</p>
                     </div>
-                    <img src="./assets/images/usage-3.webp" alt="画像をダウンロードする手順のイラスト" class="card-image" loading="lazy">
-                    <p>「画像をダウンロード」ボタンを押すと、集中線が追加された画像が保存されます。</p>
                 </div>
             </div>
         </section>
 
-        <section id="introduction" aria-labelledby="introduction-title">
-            <h2 id="introduction-title" class="section-title">集中線とは</h2>
-            <div class="introduction-container">
-                <img src="./assets/images/focuslines.webp" alt="集中線の画像" class="introduction-image" loading="lazy">
-                <div class="introduction-text">
-                    <p>集中線は、漫画やイラスト、広告デザインなどで広く使われる表現技法の一つです。ある一点から放射状に伸びる直線を描くことで、視線を中心に誘導し、特定の対象を強調する効果があります。</p>
-                    <p>驚きや焦りといった感情の表現、スピード感の演出、あるいは単に読者の注意を引きたい場面など、様々なシーンで活用されています。このツールなら、誰でも手軽に集中線を使って、自分の画像をより印象的に仕上げられます。</p>
+        <section id="introduction" class="section-full" aria-labelledby="introduction-title">
+            <div class="container-inner">
+                <h2 id="introduction-title" class="section-title">集中線とは</h2>
+                <div class="introduction-container">
+                    <img src="./assets/images/focuslines.webp" alt="集中線の画像" class="introduction-image" loading="lazy">
+                    <div class="introduction-text">
+                        <p>集中線は、漫画やイラスト、広告デザインなどで広く使われる表現技法の一つです。ある一点から放射状に伸びる直線を描くことで、視線を中心に誘導し、特定の対象を強調する効果があります。</p>
+                        <p>驚きや焦りといった感情の表現、スピード感の演出、あるいは単に読者の注意を引きたい場面など、様々なシーンで活用されています。このツールなら、誰でも手軽に集中線を使って、自分の画像をより印象的に仕上げられます。
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="tips" aria-labelledby="tips-title">
-            <h2 id="tips-title" class="section-title">設定のコツ</h2>
-            <div class="tips-grid">
-                <div class="card">
-                    <img src="./assets/images/tip-thickness.webp" alt="集中線の太さを変えた比較画像" class="card-image" loading="lazy">
-                    <div class="card-content">
-                        <h3>線の太さ</h3>
-                        <p>細い線は繊細でスピード感のある印象に。太い線はコミカルでパワフルな印象を与えます。</p>
+        <section id="tips" class="section-full bg-gray" aria-labelledby="tips-title">
+            <div class="container-inner">
+                <h2 id="tips-title" class="section-title">設定のコツ</h2>
+                <div class="tips-grid">
+                    <div class="card">
+                        <img src="./assets/images/tip-thickness.webp" alt="集中線の太さを変えた比較画像" class="card-image" loading="lazy">
+                        <div class="card-content">
+                            <h3>線の太さ</h3>
+                            <p>細い線は繊細でスピード感のある印象に。太い線はコミカルでパワフルな印象を与えます。</p>
+                        </div>
                     </div>
-                </div>
-                <div class="card">
-                    <img src="./assets/images/tip-count.webp" alt="集中線の本数を変えた比較画像" class="card-image" loading="lazy">
-                    <div class="card-content">
-                        <h3>線の本数</h3>
-                        <p>本数が少ないとスッキリした印象に。多くすると密度が増し、より強いインパクトを生み出します。</p>
+                    <div class="card">
+                        <img src="./assets/images/tip-count.webp" alt="集中線の本数を変えた比較画像" class="card-image" loading="lazy">
+                        <div class="card-content">
+                            <h3>線の本数</h3>
+                            <p>本数が少ないとスッキリした印象に。多くすると密度が増し、より強いインパクトを生み出します。</p>
+                        </div>
                     </div>
-                </div>
-                <div class="card">
-                    <img src="./assets/images/tip-random.webp" alt="集中線のランダム度を変えた比較画像" class="card-image" loading="lazy">
-                    <div class="card-content">
-                        <h3>ランダム性</h3>
-                        <p>値を大きくすると、線の長さや配置に「揺らぎ」が加わり、手書きのような温かみや荒々しさを表現できます。</p>
+                    <div class="card">
+                        <img src="./assets/images/tip-random.webp" alt="集中線のランダム度を変えた比較画像" class="card-image" loading="lazy">
+                        <div class="card-content">
+                            <h3>ランダム性</h3>
+                            <p>値を大きくすると、線の長さや配置に「揺らぎ」が加わり、手書きのような温かみや荒々しさを表現できます。</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -267,14 +287,16 @@
     </div>
 
     <footer>
-        <p>© <span id="year">2025</span> Hato. All rights reserved.</p>
-        <nav>
-            <a href="/">トップページ</a>
-            <a href="/faq.html">よくある質問</a>
-            <a href="/terms.html">利用規約</a>
-            <a href="/privacy.html">プライバシーポリシー</a>
-            <a href="/contact.html">ご意見・ご要望</a>
-        </nav>
+        <div class="footer-content">
+            <p class="copyright">© <span id="year">2025</span> Hato. All rights reserved.</p>
+            <nav>
+                <a href="/">トップページ</a>
+                <a href="/faq.html">よくある質問</a>
+                <a href="/terms.html">利用規約</a>
+                <a href="/privacy.html">プライバシーポリシー</a>
+                <a href="/contact.html">ご意見・ご要望</a>
+            </nav>
+        </div>
     </footer>
 
     <script type="module" src="./assets/js/main.js"></script>
@@ -282,4 +304,5 @@
     <script type="module" src="./assets/js/range-style.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js" defer></script>
 </body>
+
 </html>
