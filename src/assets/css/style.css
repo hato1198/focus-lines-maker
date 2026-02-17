@@ -37,8 +37,10 @@
 :root {
     --primary-color: #007bff;
     --primary-hover-color: #0056b3;
-    --background-color: #f8faff;
+    --background-color: #fafcff;
     --container-bg-color: #ffffff;
+    --dark-bg-color: #343a40;
+    --gray-bg-color: #edf0f8;
     --light-bg-color: #f9f9f9;
     --text-color: #333;
     --border-color: #dee2e6;
@@ -95,7 +97,7 @@ a:hover {
 }
 
 .bg-gray {
-    background-color: #f2f5fc;
+    background-color: var(--gray-bg-color);
 }
 
 /* 3.2. Header & Footer */
@@ -169,7 +171,7 @@ header p.site-description {
 }
 
 footer {
-    background-color: #343a40;
+    background-color: var(--dark-bg-color);
     color: #f8f9fa;
     padding: 2rem 4rem;
     margin-top: 0;
