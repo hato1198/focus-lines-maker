@@ -85,7 +85,7 @@ a:hover {
 
 .section-full {
     width: 100%;
-    padding: 4rem 1.5rem;
+    padding: 3rem 1.5rem 5rem;
     box-sizing: border-box;
 }
 
@@ -197,7 +197,7 @@ footer nav {
 }
 
 footer nav a {
-    color: #dee2e6;
+    color: var(--border-color);
     white-space: nowrap;
 }
 
@@ -348,7 +348,6 @@ footer nav a:hover {
 }
 
 .section-title {
-    margin-top: 0;
     text-align: center;
     font-size: 1.8rem;
     font-weight: 400;
@@ -1046,13 +1045,23 @@ select:hover {
 
 /* --- 9. RESPONSIVE --- */
 @media (max-width: 1025px) {
-    
+
     .features-grid {
         gap: 0.8rem;
     }
 
     .feature-item {
         padding: 1.5rem 1rem;
+    }
+
+    .footer-content {
+        display: block;
+    }
+
+    .copyright {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: var(--border-color) solid 1px;
     }
 }
 
@@ -1096,16 +1105,6 @@ select:hover {
         align-items: flex-start;
         gap: 1rem;
         padding: 2rem 1.5rem;
-    }
-
-    .footer-content {
-        display: block;
-    }
-
-    .copyright {
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
-        border-bottom: #dee2e6 solid 1px;
     }
 
     footer nav {
