@@ -5,8 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
         swatches: [
             '#000000',
             '#ffffff',
-            '#e70013',
-            '#ffdd00',
+            '#dc143c',
+            '#ffe224',
             '#2dc73f',
             '#48cae4'
         ]
