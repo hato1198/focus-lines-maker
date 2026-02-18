@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '#000000',
             '#ffffff',
             '#dc143c',
-            '#ffd269',
+            '#ffdd00',
             '#2dc73f',
             '#48cae4'
         ],
