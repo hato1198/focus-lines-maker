@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Colorisの初期化と設定
     Coloris({
-        alpha: true
+        alpha: true,
+        swatches: [
+            '#000000',
+            '#ffffff',
+            '#dc143c',
+            '#ffd269',
+            '#2dc73f',
+            '#48cae4'
+        ],
     });
     // ヘルプアイコンのクリック無効化
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
