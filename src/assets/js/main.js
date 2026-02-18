@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
             '#ffdd00',
             '#2dc73f',
             '#48cae4'
-        ],
+        ]
     });
     // ヘルプアイコンのクリック無効化
     document.querySelectorAll('.tooltip-icon').forEach(icon => {
