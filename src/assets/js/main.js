@@ -50,8 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
         focusShape: 'rectangle',
         lineType: 'normal',
         lineColor: '#000000',
-        lineCount: '210',
-        lineThickness: '60',
+        lineCount: '150',
+        lineThickness: '50',
         randomness: '0.5'
     };
     let originalFileName = '';
