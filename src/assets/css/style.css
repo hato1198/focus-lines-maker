@@ -693,6 +693,7 @@ select:hover {
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
     font-size: 0.9rem;
+    cursor: pointer;
 }
 
 .controls .clr-field button {

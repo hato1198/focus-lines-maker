@@ -2,17 +2,21 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('%cv( ･ω･ )ｨｪｨ', 'font-size: 1rem;');
     
     // --- Colorisの初期化と設定 ---
-    Coloris({
-        alpha: true,
-        swatches: [
-            '#000000',
-            '#ffffff',
-            '#dc143c',
-            '#ffe224',
-            '#2dc73f',
-            '#48cae4'
-        ]
-    });
+    try {
+        Coloris({
+            alpha: true,
+            swatches: [
+                '#000000',
+                '#ffffff',
+                '#dc143c',
+                '#ffe224',
+                '#2dc73f',
+                '#48cae4'
+            ]
+        });
+    } catch (e) {
+        console.error('Coloris initialization failed:', e);
+    }
 
     // --- Web Worker の初期化 ---
     const worker = new Worker(new URL('./focus-lines-worker.js', import.meta.url), { type: 'module' });
@@ -171,7 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageBitmap = await createImageBitmap(file);
             originalImage = imageBitmap;
 
-            // Worker に画像を転送 (コピーを作成して転送)
             const bitmapForWorker = await createImageBitmap(file);
             worker.postMessage({ type: 'setImage', image: bitmapForWorker }, [bitmapForWorker]);
 
