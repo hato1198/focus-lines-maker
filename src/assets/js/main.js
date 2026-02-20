@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Colorisの初期化と設定
+    console.log('%cv( ･ω･ )ｨｪｨ', 'font-size: 1rem;');
+    
+    // --- Colorisの初期化と設定 ---
     Coloris({
         alpha: true,
         swatches: [
@@ -10,12 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
             '#2dc73f',
             '#48cae4'
         ]
-    });
-    // ヘルプアイコンのクリック無効化
-    document.querySelectorAll('.tooltip-icon').forEach(icon => {
-        icon.addEventListener('click', (e) => {
-            e.preventDefault();
-        });
     });
 
     // --- Web Worker の初期化 ---
